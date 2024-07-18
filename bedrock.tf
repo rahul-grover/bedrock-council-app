@@ -1,7 +1,7 @@
 #Generate bedrockknowledge base with a s3 bucket
 resource "aws_s3_bucket" "bedrockknowledge" {
   bucket = "rg-bedrock-knowledgebase"
-  region = local.settings.region
+  region = local.regions[local.settings.region]
 }
 resource "aws_s3_bucket_public_access_block" "access_bedrockknowledge" {
   bucket = aws_s3_bucket.bedrockknowledge.id
