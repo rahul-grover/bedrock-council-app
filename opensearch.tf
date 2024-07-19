@@ -59,7 +59,8 @@ resource "aws_opensearchserverless_access_policy" "name" {
         "ResourceType" : "index"
       }
     ],
-    "Principal" : ["arn:aws:iam::${local.account_id}:role/${pKbRole}"]
+    ##"Principal" : ["arn:aws:iam::${local.account_id}:role/${pKbRole}"]
+   
   })
 }
 
