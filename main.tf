@@ -9,10 +9,21 @@ locals {
   tags = {
     "region" : local.settings.region
     "env" : local.settings.env
+    "nukeoptout" : true
+    "owner": "rahul.grover@slalom.com"
   }
+
+  account_id = data.aws_caller_identity.current.account_id
 }
 
+data "aws_caller_identity" "current" {}
+
 provider "aws" {
-  region = local.regions[local.settings.region]
   # Add other provider configuration, if needed
+  region = local.regions[local.settings.region]
+}
+
+provider "awscc" {
+  # Configuration options
+  region = local.regions[local.settings.region]
 }
