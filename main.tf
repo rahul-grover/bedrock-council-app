@@ -28,7 +28,7 @@ provider "awscc" {
   region = local.regions[local.settings.region]
 }
 
-module "opensearch_collection_public" {
+module "opensearch_collection" {
   source = "./modules/opensearch/collection"
 
   name             = "e2e-rag-collection-public"
