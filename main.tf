@@ -29,7 +29,7 @@ provider "awscc" {
 }
 
 module "opensearch_collection_public" {
-  source = "../../modules/opensearch-serverless"
+  source = "./modules/opensearch-serverless"
 
   name             = "e2e-rag-collection-public"
   description      = "Public access for ct-kb-aoss-collection collection"
