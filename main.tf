@@ -39,8 +39,23 @@ module "opensearch_collection" {
   create_access_policy  = true
   create_network_policy = true
 
-  access_policy_index_permissions      = ["aoss:DescribeIndex", "aoss:UpdateIndex", "aoss:CreateIndex"]
-  access_policy_collection_permissions = ["aoss:DescribeCollectionItems", "aoss:UpdateCollectionItems", "aoss:CreateCollectionItems"]
+  access_policy_index_permissions      = [
+            "aoss:CreateIndex",
+            "aoss:DescribeIndex",
+            "aoss:ReadDocument",
+            "aoss:UpdateIndex",
+            "aoss:WriteDocument"
+          ]
 
+  access_policy_collection_permissions = [
+    "aoss:DescribeCollectionItems", "aoss:UpdateCollectionItems", "aoss:CreateCollectionItems"]
+
+  tags = local.tags
+}
+
+module "s3" {
+  source = "./modules/s3"
+
+  force_destroy = true
   tags = local.tags
 }

@@ -3,7 +3,7 @@ data "aws_caller_identity" "current" {
 }
 
 locals {
-  tags = merge(var.tags, { terraform-aws-modules = "opensearch" })
+  tags = var.tags
 }
 
 ################################################################################
