@@ -3,10 +3,10 @@ variable "TFC_WORKSPACE_NAME" {
   type        = string
 }
 
-variable "input_bucket_name" {
-  type        = string
-  description = "Provide existing S3 bucket name where data is already stored"
-}
+# variable "input_bucket_name" {
+#   type        = string
+#   description = "Provide existing S3 bucket name where data is already stored"
+# }
 
 variable "input_document_upload_folder_prefix" {
   type        = string
