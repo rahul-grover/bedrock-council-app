@@ -39,5 +39,8 @@ module "opensearch_collection" {
   create_access_policy  = true
   create_network_policy = true
 
+  access_policy_index_permissions      = ["aoss:DescribeIndex", "aoss:UpdateIndex", "aoss:CreateIndex"]
+  access_policy_collection_permissions = ["aoss:DescribeCollectionItems", "aoss:UpdateCollectionItems", "aoss:CreateCollectionItems"]
+
   tags = local.tags
 }
