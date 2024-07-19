@@ -27,3 +27,17 @@ provider "awscc" {
   # Configuration options
   region = local.regions[local.settings.region]
 }
+
+module "opensearch_collection_public" {
+  source = "../../modules/opensearch-serverless"
+
+  name             = "${local.name}-public"
+  description      = "Public access for ct-kb-aoss-collection collection"
+  type             = "VECTORSEARCH"
+  standby_replicas = "ENABLED"
+
+  create_access_policy  = true
+  create_network_policy = true
+
+  tags = local.tags
+}
