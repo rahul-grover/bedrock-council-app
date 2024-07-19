@@ -31,7 +31,7 @@ provider "awscc" {
 module "opensearch_collection" {
   source = "./modules/opensearch/collection"
 
-  name             = "e2e-rag-collection-public"
+  name             = "e2e-rag-collection"
   description      = "Public access for ct-kb-aoss-collection collection"
   type             = "VECTORSEARCH"
   standby_replicas = "ENABLED"
