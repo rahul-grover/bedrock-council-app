@@ -10,7 +10,7 @@ locals {
     "region" : local.settings.region
     "env" : local.settings.env
     "nukeoptout" : true
-    "owner": "rahul.grover@slalom.com"
+    "owner" : "rahul.grover@slalom.com"
   }
 
   account_id = data.aws_caller_identity.current.account_id
@@ -29,7 +29,7 @@ provider "awscc" {
 }
 
 module "opensearch_collection_public" {
-  source = "../../modules/opensearch-serverless"
+  source = "./modules/opensearch/collection"
 
   name             = "e2e-rag-collection-public"
   description      = "Public access for ct-kb-aoss-collection collection"
