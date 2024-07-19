@@ -1,5 +1,5 @@
 #create opensearch serverless
-resource "aws_opensearchserverless_security_policy" "this" {
+resource "aws_opensearchserverless_security_policy" "os_encryption_policy" {
   name        = "${var.collection_name}-enc"
   type        = "encryption"
   description = "Security policy for OpenSearch Serverless"
@@ -13,7 +13,7 @@ resource "aws_opensearchserverless_security_policy" "this" {
     ]
   })
 }
-resource "aws_opensearchserverless_security_policy" "this" {
+resource "aws_opensearchserverless_security_policy" "os_network_policy" {
   name        = "${var.collection_name}-net"
   type        = "network"
   description = "Security policy for OpenSearch Serverless"
