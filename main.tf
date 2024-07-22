@@ -14,9 +14,13 @@ locals {
   }
 
   account_id = data.aws_caller_identity.current.account_id
+  partition  = data.aws_partition.current.partition
+  region     = data.aws_region.current.name
 }
 
 data "aws_caller_identity" "current" {}
+data "aws_partition" "current" {}
+data "aws_region" "current" {}
 
 provider "aws" {
   # Add other provider configuration, if needed
@@ -26,21 +30,4 @@ provider "aws" {
 provider "awscc" {
   # Configuration options
   region = local.regions[local.settings.region]
-}
-
-module "opensearch_collection" {
-  source = "./modules/opensearch/collection"
-
-  name             = "e2e-rag-collection"
-  description      = "Public access for ct-kb-aoss-collection collection"
-  type             = "VECTORSEARCH"
-  standby_replicas = "ENABLED"
-
-  create_access_policy  = true
-  create_network_policy = true
-
-  access_policy_index_permissions      = ["aoss:DescribeIndex", "aoss:UpdateIndex", "aoss:CreateIndex"]
-  access_policy_collection_permissions = ["aoss:DescribeCollectionItems", "aoss:UpdateCollectionItems", "aoss:CreateCollectionItems"]
-
-  tags = local.tags
 }

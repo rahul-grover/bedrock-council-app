@@ -5,16 +5,16 @@ output "tfc_workspace_name" {
 
 #Opensearch serverless collection output
 output "opensearch_serverless_collection_endpoint" {
-    description = "Opensearch serverless collection endpoint"
-    value = module.opensearch_collection.endpoint
+  description = "Opensearch serverless collection endpoint"
+  value       = aws_opensearchserverless_collection.this.collection_endpoint
 }
 
 output "opensearch_serverless_collection_arn" {
-    description = "Opensearch serverless collection arn"
-    value = module.opensearch_collection.arn
+  description = "Opensearch serverless collection arn"
+  value       = aws_opensearchserverless_collection.this.arn
 }
 
 output "opensearch_serverless_collection_id" {
-    description = "Opensearch serverless collection id"
-    value = module.opensearch_collection.id
+  description = "Opensearch serverless collection id"
+  value       = aws_opensearchserverless_collection.this.id
 }
