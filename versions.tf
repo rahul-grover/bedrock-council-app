@@ -8,5 +8,9 @@ terraform {
       source  = "hashicorp/awscc"
       version = "1.6.0"
     }
+    opensearch = {
+      source  = "opensearch-project/opensearch"
+      version = "2.3.0"
+    }
   }
 }

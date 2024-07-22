@@ -1,22 +1,10 @@
-#Generate bedrockknowledge base with a s3 bucket
-# resource "aws_s3_bucket" "bedrockknowledge" {
-#   bucket = "rg-bedrock-knowledgebase"
-# }
+data "aws_bedrock_foundation_model" "agent" {
+  model_id = var.agent_model_id
+}
 
-# resource "aws_s3_bucket_public_access_block" "access_bedrockknowledge" {
-#   bucket                  = aws_s3_bucket.bedrockknowledge.id
-#   block_public_acls       = true
-#   block_public_policy     = true
-#   ignore_public_acls      = true
-#   restrict_public_buckets = true
-# }
-# resource "aws_s3_bucket_versioning" "bedrockknowledge_versioning" {
-#   bucket = aws_s3_bucket.bedrockknowledge.id
-#   versioning_configuration {
-#     status = "Enabled"
-#   }
-# }
-
+data "aws_bedrock_foundation_model" "kb" {
+  model_id = var.kb_model_id
+}
 
 data "aws_bedrock_foundation_models" "test" {}
 
@@ -25,51 +13,84 @@ output "foundation_models" {
   value       = data.aws_bedrock_foundation_models.test
 }
 
-# resource "awscc_bedrock_knowledge_base" "example" {
-#   name        = "example"
-#   description = "Example Knowledge base"
-#   role_arn    = var.kb_role_arn
+################################################################################
+# Bedrock Knowledge Base
+################################################################################
 
-#   storage_configuration = {
-#     type = "OPENSEARCH_SERVERLESS"
-#     opensearch_serverless_configuration = {
-#       collection_arn    = var.collection_arn
-#       vector_index_name = var.vector_index_name
-#       field_mapping = {
-#         metadata_field = var.metadata_field
-#         text_field     = var.text_field
-#         vector_field   = var.vector_field
-#       }
-#     }
+resource "aws_bedrockagent_knowledge_base" "this" {
+  name     = var.kb_name
+  role_arn = aws_iam_role.bedrock_kb.arn
+  knowledge_base_configuration {
+    vector_knowledge_base_configuration {
+      embedding_model_arn = data.aws_bedrock_foundation_model.kb.model_arn
+    }
+    type = "VECTOR"
+  }
+  storage_configuration {
+    type = "OPENSEARCH_SERVERLESS"
+    opensearch_serverless_configuration {
+      collection_arn    = aws_opensearchserverless_collection.this.arn
+      vector_index_name = "bedrock-knowledge-base-default-index"
+      field_mapping {
+        vector_field   = "bedrock-knowledge-base-default-vector"
+        text_field     = "AMAZON_BEDROCK_TEXT_CHUNK"
+        metadata_field = "AMAZON_BEDROCK_METADATA"
+      }
+    }
+  }
+  tags = local.tags
+  depends_on = [
+    aws_iam_role_policy.bedrock_kb_model,
+    aws_iam_role_policy.bedrock_kb_s3,
+    aws_iam_role_policy.bedrock_kb_oss,
+  ]
+}
+
+resource "aws_bedrockagent_data_source" "this" {
+  knowledge_base_id = aws_bedrockagent_knowledge_base.this.id
+  name              = "${var.kb_name}DataSource"
+  data_source_configuration {
+    type = "S3"
+    s3_configuration {
+      bucket_arn = aws_s3_bucket.bedrock_kb.arn
+    }
+  }
+}
+
+################################################################################
+# Bedrock Agent
+################################################################################
+
+# resource "aws_bedrockagent_agent" "this" {
+#   agent_name              = var.agent_name
+#   agent_resource_role_arn = aws_iam_role.bedrock_agent.arn
+#   description             = var.agent_desc
+#   foundation_model        = data.aws_bedrock_foundation_model.agent.model_id
+#   instruction             = file("${path.module}/prompt_templates/instruction.txt")
+#   depends_on = [
+#     aws_iam_role_policy.bedrock_agent_kb,
+#     aws_iam_role_policy.bedrock_agent_model
+#   ]
+# }
+
+# resource "aws_bedrockagent_agent_action_group" "this" {
+#   action_group_name          = var.action_group_name
+#   agent_id                   = aws_bedrockagent_agent.this.id
+#   agent_version              = "DRAFT"
+#   description                = var.action_group_desc
+#   skip_resource_in_use_check = true
+#   action_group_executor {
+#     lambda = aws_lambda_function.bedrock_action_group.arn
 #   }
-#   knowledge_base_configuration = {
-#     type = "VECTOR"
-#     vector_knowledge_base_configuration = {
-#       embedding_model_arn = "arn:aws:bedrock:us-east-1::foundation-model/amazon.titan-embed-text-v1"
-#     }
+#   api_schema {
+#     payload = file("${path.module}/lambda/knowledge-base/schema.yaml")
 #   }
 # }
 
-# variable "vector_index_name" {
-#   type = string
+# resource "aws_bedrockagent_agent_knowledge_base_association" "forex_kb" {
+#   agent_id             = aws_bedrockagent_agent.forex_asst.id
+#   description          = file("${path.module}/prompt_templates/kb_instruction.txt")
+#   knowledge_base_id    = aws_bedrockagent_knowledge_base.forex_kb.id
+#   knowledge_base_state = "ENABLED"
 # }
 
-# variable "metadata_field" {
-#   type = string
-# }
-
-# variable "text_field" {
-#   type = string
-# }
-
-# variable "vector_field" {
-#   type = string
-# }
-
-# variable "collection_arn" {
-#   type = string
-# }
-
-# variable "kb_role_arn" {
-#   type = string
-# }

@@ -8,16 +8,46 @@ variable "TFC_WORKSPACE_NAME" {
 #   description = "Provide existing S3 bucket name where data is already stored"
 # }
 
+variable "bedrock_kb_s3" {
+  type        = string
+  description = "S3 bucket name for Bedrock KB"
+  default     = null
+}
+
 variable "input_document_upload_folder_prefix" {
   type        = string
   description = "Prefix in S3 bucket [optional]"
   default     = ""
 }
 
-variable "embed_model" {
+variable "kb_name" {
+  description = "The knowledge base name."
   type        = string
-  description = "Select Embedding model"
-  default     = "amazon.titan-embed-text-v1"
+  default     = "e2e-rag-kb-lab"
+}
+
+variable "kb_model_id" {
+  description = "The ID of the foundational model used by the knowledge base."
+  type        = string
+  default     = "cohere.embed-english-v3"
+}
+
+variable "agent_model_id" {
+  description = "The ID of the foundational model used by the agent."
+  type        = string
+  default     = "anthropic.claude-3-haiku-20240307-v1:0"
+}
+
+variable "agent_action_group" {
+  description = "The action group name."
+  type        = string
+  default     = "e2e-rag-kb"
+}
+
+variable "agent_name" {
+  description = "The agent name."
+  type        = string
+  default     = "e2e-rag-agent"
 }
 
 variable "chunking_strategy" {
@@ -55,7 +85,7 @@ variable "collection_name" {
   # }
 }
 
-variable "index_name" {
+variable "vector_index_name" {
   type        = string
   description = "Index name to be created in vector store"
   default     = "e2e-rag-index"
