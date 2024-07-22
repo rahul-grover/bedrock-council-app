@@ -10,12 +10,12 @@ data "archive_file" "knowledge_base_zip" {
 }
 
 resource "aws_lambda_function" "bedrock_action_group" {
-  function_name = var.agent_action_group
-  role          = aws_iam_role.lambda.arn
-  description   = "A Lambda function for the action group ${var.agent_action_group}"
-  filename      = data.archive_file.knowledge_base_zip.output_path
-  handler       = "lambda_function.lambda_handler"
-  runtime       = "python3.12"
+  function_name    = var.agent_action_group
+  role             = aws_iam_role.lambda.arn
+  description      = "A Lambda function for the action group ${var.agent_action_group}"
+  filename         = data.archive_file.knowledge_base_zip.output_path
+  handler          = "lambda_function.lambda_handler"
+  runtime          = "python3.12"
   source_code_hash = data.archive_file.knowledge_base_zip.output_base64sha256
   depends_on       = [aws_iam_role.lambda]
 }
