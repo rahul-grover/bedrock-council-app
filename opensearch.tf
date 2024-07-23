@@ -144,7 +144,7 @@ provider "opensearch" {
 }
 
 resource "opensearch_index" "this" {
-  name                           = "bedrock-knowledge-base-default-index"
+  name                           = var.vector_index_name
   number_of_shards               = "2"
   number_of_replicas             = "0"
   index_knn                      = true
@@ -152,7 +152,7 @@ resource "opensearch_index" "this" {
   mappings                       = <<-EOF
     {
       "properties": {
-        "bedrock-knowledge-base-default-vector": {
+        "${var.vector_index_name}": {
           "type": "knn_vector",
           "dimension": 1024,
           "method": {
