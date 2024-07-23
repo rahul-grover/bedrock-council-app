@@ -3,7 +3,10 @@ output "tfc_workspace_name" {
   value       = var.TFC_WORKSPACE_NAME
 }
 
-#Opensearch serverless collection output
+################################################################################
+# OpenSearch
+################################################################################
+
 output "opensearch_serverless_collection_endpoint" {
   description = "Opensearch serverless collection endpoint"
   value       = aws_opensearchserverless_collection.this.collection_endpoint

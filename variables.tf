@@ -1,29 +1,43 @@
+################################################################################
+# Common
+################################################################################
+
 variable "TFC_WORKSPACE_NAME" {
   description = "Workspace of the infrastructure"
   type        = string
 }
 
-# variable "input_bucket_name" {
-#   type        = string
-#   description = "Provide existing S3 bucket name where data is already stored"
-# }
+################################################################################
+# OpenSearch
+################################################################################
+
+variable "collection_name" {
+  type        = string
+  description = "Name of the Collection"
+  default     = "e2e-rag-collection"
+}
+
+variable "vector_index_name" {
+  type        = string
+  description = "Index name to be created in vector store"
+  default     = "bedrock-knowledge-base-default-index"
+}
+
+
+################################################################################
+# Bedrock Knowledge Base
+################################################################################
 
 variable "bedrock_kb_s3" {
   type        = string
   description = "S3 bucket name for Bedrock KB"
-  default     = null
-}
-
-variable "input_document_upload_folder_prefix" {
-  type        = string
-  description = "Prefix in S3 bucket [optional]"
-  default     = ""
+  default     = "e2e-rag-kb"
 }
 
 variable "kb_name" {
   description = "The knowledge base name."
   type        = string
-  default     = "e2e-rag-kb-lab"
+  default     = "e2e-rag-kb"
 }
 
 variable "kb_model_id" {
@@ -32,10 +46,32 @@ variable "kb_model_id" {
   default     = "cohere.embed-english-v3"
 }
 
+################################################################################
+# Bedrock Agent
+################################################################################
+
 variable "agent_model_id" {
   description = "The ID of the foundational model used by the agent."
   type        = string
-  default     = "anthropic.claude-3-haiku-20240307-v1:0"
+  default     = "anthropic.claude-3-sonnet-20240229-v1:0"
+}
+
+variable "agent_name" {
+  description = "The agent name."
+  type        = string
+  default     = "e2e-rag-agent"
+}
+
+variable "agent_description" {
+  description = "The agent description."
+  type        = string
+  default     = "e2e-rag-agent"
+}
+
+variable "agent_instruction" {
+  description = "Provide clear and specific instructions for the task the Agent will perform."
+  type        = string
+  default     = "Role: You are an investment analyst responsible for creating portfolios, researching companies, summarizing documents, and formatting emails."
 }
 
 variable "agent_action_group" {
@@ -44,10 +80,16 @@ variable "agent_action_group" {
   default     = "e2e-rag-kb"
 }
 
-variable "agent_name" {
-  description = "The agent name."
+variable "agent_action_group_description" {
+  description = "Description of the action group."
   type        = string
-  default     = "e2e-rag-agent"
+  default     = null
+}
+
+variable "agent_kb_association_description" {
+  description = "Description of what the agent should use the knowledge base for."
+  type        = string
+  default     = "Use this knowledge base as you are an investment analyst responsible for creating portfolios, researching companies, summarizing documents, and formatting emails."
 }
 
 variable "chunking_strategy" {
@@ -66,32 +108,4 @@ variable "overlap_percentage" {
   type        = string
   description = "Percent overlap in each chunk"
   default     = ""
-}
-
-variable "vector_store" {
-  type        = string
-  description = "Select VectorStore"
-  default     = "Open-Search-Serverless"
-}
-
-variable "collection_name" {
-  type        = string
-  description = "Name of the Collection"
-  default     = "e2e-rag-collection"
-
-  # validation {
-  #   condition     = can(regex("^[a-z0-9](-*[a-z0-9])*$", var.collection_name)) && length(var.collection_name) >= 1 && length(var.collection_name) <= 63
-  #   error_message = "The collection_name value must be lowercase or numbers with a length of 1-63 characters."
-  # }
-}
-
-variable "vector_index_name" {
-  type        = string
-  description = "Index name to be created in vector store"
-  default     = "e2e-rag-index"
-
-  # validation {
-  #   condition     = can(regex("^[a-z0-9](-*[a-z0-9])*$", var.index_name)) && length(var.index_name) >= 1 && length(var.index_name) <= 63
-  #   error_message = "The index_name value must be lowercase or numbers with a length of 1-63 characters."
-  # }
 }

@@ -30,9 +30,9 @@ resource "aws_bedrockagent_knowledge_base" "this" {
     type = "OPENSEARCH_SERVERLESS"
     opensearch_serverless_configuration {
       collection_arn    = aws_opensearchserverless_collection.this.arn
-      vector_index_name = "bedrock-knowledge-base-default-index"
+      vector_index_name = var.vector_index_name
       field_mapping {
-        vector_field   = "bedrock-knowledge-base-default-vector"
+        vector_field   = var.vector_index_name
         text_field     = "AMAZON_BEDROCK_TEXT_CHUNK"
         metadata_field = "AMAZON_BEDROCK_METADATA"
       }
@@ -43,6 +43,8 @@ resource "aws_bedrockagent_knowledge_base" "this" {
     aws_iam_role_policy.bedrock_kb_model,
     aws_iam_role_policy.bedrock_kb_s3,
     aws_iam_role_policy.bedrock_kb_oss,
+    opensearch_index.this,
+    time_sleep.aws_iam_role_policy_bedrock_kb_oss
   ]
 }
 
@@ -61,36 +63,51 @@ resource "aws_bedrockagent_data_source" "this" {
 # Bedrock Agent
 ################################################################################
 
-# resource "aws_bedrockagent_agent" "this" {
-#   agent_name              = var.agent_name
-#   agent_resource_role_arn = aws_iam_role.bedrock_agent.arn
-#   description             = var.agent_desc
-#   foundation_model        = data.aws_bedrock_foundation_model.agent.model_id
-#   instruction             = file("${path.module}/prompt_templates/instruction.txt")
-#   depends_on = [
-#     aws_iam_role_policy.bedrock_agent_kb,
-#     aws_iam_role_policy.bedrock_agent_model
-#   ]
-# }
+resource "aws_bedrockagent_agent" "this" {
+  agent_name              = var.agent_name
+  agent_resource_role_arn = aws_iam_role.bedrock_agent.arn
+  description             = var.agent_description
+  foundation_model        = data.aws_bedrock_foundation_model.agent.model_id
+  instruction             = var.agent_instruction
+  depends_on = [
+    aws_iam_role_policy.bedrock_agent_kb,
+    aws_iam_role_policy.bedrock_agent_model
+  ]
+}
 
-# resource "aws_bedrockagent_agent_action_group" "this" {
-#   action_group_name          = var.action_group_name
-#   agent_id                   = aws_bedrockagent_agent.this.id
-#   agent_version              = "DRAFT"
-#   description                = var.action_group_desc
-#   skip_resource_in_use_check = true
-#   action_group_executor {
-#     lambda = aws_lambda_function.bedrock_action_group.arn
-#   }
-#   api_schema {
-#     payload = file("${path.module}/lambda/knowledge-base/schema.yaml")
-#   }
-# }
+resource "aws_bedrockagent_agent_action_group" "this" {
+  action_group_name          = var.agent_action_group
+  agent_id                   = aws_bedrockagent_agent.this.id
+  agent_version              = "DRAFT"
+  description                = var.agent_action_group_description
+  skip_resource_in_use_check = true
+  action_group_executor {
+    lambda = aws_lambda_function.bedrock_action_group.arn
+  }
+  api_schema {
+    payload = file("${path.module}/lambda/knowledge-base/schema.yaml")
+  }
+}
 
-# resource "aws_bedrockagent_agent_knowledge_base_association" "forex_kb" {
-#   agent_id             = aws_bedrockagent_agent.forex_asst.id
-#   description          = file("${path.module}/prompt_templates/kb_instruction.txt")
-#   knowledge_base_id    = aws_bedrockagent_knowledge_base.forex_kb.id
-#   knowledge_base_state = "ENABLED"
-# }
+resource "aws_bedrockagent_agent_knowledge_base_association" "this" {
+  agent_id             = aws_bedrockagent_agent.this.id
+  description          = var.agent_kb_association_description
+  knowledge_base_id    = aws_bedrockagent_knowledge_base.this.id
+  knowledge_base_state = "ENABLED"
+}
 
+# Agent must be prepared after changes are made
+resource "null_resource" "agent_preparation" {
+  triggers = {
+    forex_api_state = sha256(jsonencode(aws_bedrockagent_agent_action_group.this))
+    forex_kb_state  = sha256(jsonencode(aws_bedrockagent_knowledge_base.this))
+  }
+  provisioner "local-exec" {
+    command = "aws bedrock-agent prepare-agent --agent-id ${aws_bedrockagent_agent.this.id}"
+  }
+  depends_on = [
+    aws_bedrockagent_agent.this,
+    aws_bedrockagent_agent_action_group.this,
+    aws_bedrockagent_knowledge_base.this
+  ]
+}

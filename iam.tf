@@ -91,6 +91,13 @@ resource "aws_iam_role_policy" "bedrock_kb_oss" {
   })
 }
 
+# Fix error: The
+# knowledge base storage configuration provided is invalid... Request failed: [security_exception] 403 Forbidden
+resource "time_sleep" "aws_iam_role_policy_bedrock_kb_oss" {
+  create_duration = "20s"
+  depends_on      = [aws_iam_role_policy.bedrock_kb_oss]
+}
+
 ################################################################################
 # Bedrock Agent IAM Role
 ################################################################################
