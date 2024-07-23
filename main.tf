@@ -24,7 +24,7 @@ data "aws_region" "current" {}
 
 provider "aws" {
   # Add other provider configuration, if needed
-  region = "ap-southeast-2"
+  region = local.regions[local.settings.region]
 }
 
 provider "awscc" {
