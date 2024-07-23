@@ -7,6 +7,12 @@ variable "TFC_WORKSPACE_NAME" {
   type        = string
 }
 
+variable "pipeline_iam_role" {
+  description = "The IAM role name"
+  type        = string
+  default     = "rg-bedrock-admin-role"
+}
+
 ################################################################################
 # OpenSearch
 ################################################################################
