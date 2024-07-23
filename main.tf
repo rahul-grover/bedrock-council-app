@@ -10,7 +10,7 @@ locals {
     "region" : local.settings.region
     "env" : local.settings.env
     "nukeoptout" : true
-    "owner" : "rahul.grover@slalom.com"
+    "Owner" : "rahul.grover@slalom.com"
   }
 
   account_id = data.aws_caller_identity.current.account_id
