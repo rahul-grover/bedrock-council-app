@@ -103,7 +103,7 @@ resource "null_resource" "agent_preparation" {
     forex_kb_state  = sha256(jsonencode(aws_bedrockagent_knowledge_base.this))
   }
   provisioner "local-exec" {
-    command = "aws bedrock-agent prepare-agent --agent-id ${aws_bedrockagent_agent.this.id}"
+    command = "aws bedrock-agent prepare-agent --agent-id ${aws_bedrockagent_agent.this.id} --region ${local.region}"
   }
   depends_on = [
     aws_bedrockagent_agent.this,
