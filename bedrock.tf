@@ -69,6 +69,7 @@ resource "aws_bedrockagent_agent" "this" {
   description             = var.agent_description
   foundation_model        = data.aws_bedrock_foundation_model.agent.model_id
   instruction             = var.agent_instruction
+  tags                    = local.tags
   depends_on = [
     aws_iam_role_policy.bedrock_agent_kb,
     aws_iam_role_policy.bedrock_agent_model
