@@ -180,4 +180,10 @@ resource "opensearch_index" "this" {
   EOF
   force_destroy                  = true
   depends_on                     = [aws_opensearchserverless_collection.this]
+
+  # [BUG] Index replacement with dynamic properties
+  # https://github.com/opensearch-project/terraform-provider-opensearch/issues/175#issuecomment-2037404360
+  lifecycle {
+    ignore_changes = [mappings]
+  }
 }
