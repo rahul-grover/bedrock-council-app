@@ -121,6 +121,14 @@ resource "null_resource" "bedrock_agent" {
     EOT
   }
 
+  depends_on = [
+    aws_iam_role_policy.bedrock_agent_kb,
+    aws_iam_role_policy.bedrock_agent_model,
+    opensearch_index.this,
+    time_sleep.aws_iam_role_policy_bedrock_kb_oss
+
+  ]
+
 }
 
 data "external" "agent_id" {
