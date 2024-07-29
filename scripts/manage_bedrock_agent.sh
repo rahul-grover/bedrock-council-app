@@ -5,14 +5,6 @@ AGENT_NAME=$2
 REGION=$3  
 ROLE_ARN=$4  
 MODEL=$5
-tags=("$@")
-
-tag_args=""
-for tag in "${tags[@]}"; do
-    key="${tag%%=*}"
-    value="${tag#*=}"
-    tag_args="$tag_args Key=$key,Value=$value"
-done
 
 AGENT_INSTRUCTION=$(cat ./prompt-templates/agent_instructions.txt)  
 
