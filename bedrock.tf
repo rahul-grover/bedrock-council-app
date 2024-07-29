@@ -63,22 +63,71 @@ resource "aws_bedrockagent_data_source" "this" {
 # Bedrock Agent
 ################################################################################
 
-resource "aws_bedrockagent_agent" "this" {
-  agent_name              = var.agent_name
-  agent_resource_role_arn = aws_iam_role.bedrock_agent.arn
-  description             = var.agent_description
-  foundation_model        = data.aws_bedrock_foundation_model.agent.model_id
-  instruction             = var.agent_instruction
-  tags                    = local.tags
-  depends_on = [
-    aws_iam_role_policy.bedrock_agent_kb,
-    aws_iam_role_policy.bedrock_agent_model
-  ]
+# resource "aws_bedrockagent_agent" "this" {
+#   agent_name              = var.agent_name
+#   agent_resource_role_arn = aws_iam_role.bedrock_agent.arn
+#   description             = var.agent_description
+#   foundation_model        = data.aws_bedrock_foundation_model.agent.model_id
+#   instruction             = file("${path.module}/prompt-templates/agent_instructions.txt")
+#   # aws_bedrockagent_agent prompt override block causes missing required field, UpdateAgentInput.PromptOverrideConfiguration.PromptConfiguration
+#   # https://github.com/hashicorp/terraform-provider-aws/issues/37903
+#   # aws_bedrockagent_agent resource fails to create due to inconsistent result after apply
+#   # https://github.com/hashicorp/terraform-provider-aws/issues/37168
+#   # awscc_bedrock_agent creation unsuccessful with only required inputs 
+#   # https://github.com/hashicorp/terraform-provider-awscc/issues/1572
+#   # prompt_override_configuration {
+#   #   prompt_configurations = [
+#   #     {
+#   #       base_prompt_template = file("${path.module}/prompt-templates/orchestration.txt")
+#   #       inference_configuration = [
+#   #         {
+#   #           max_length = 2048
+#   #           stop_sequences = [
+#   #             "$invoke$",
+#   #             "$answer$",
+#   #             "$error$"
+#   #           ]
+#   #           temperature = 0
+#   #           top_k       = 250
+#   #           top_p       = 1
+#   #         }
+#   #       ]
+#   #       parser_mode          = "DEFAULT"
+#   #       prompt_creation_mode = "OVERRIDDEN"
+#   #       prompt_state         = "ENABLED"
+#   #       prompt_type          = "ORCHESTRATION"
+#   #     }
+#   #   ]
+#   # }
+
+#   tags = local.tags
+#   depends_on = [
+#     aws_iam_role_policy.bedrock_agent_kb,
+#     aws_iam_role_policy.bedrock_agent_model,
+#   ]
+# }
+
+resource "null_resource" "bedrock_agent" {
+  triggers = {
+    always_run = timestamp()
+  }
+
+  provisioner "local-exec" {
+    command = "sh scripts/manage_bedrock_agent.sh create ${var.agent_name} ${local.region} ${aws_iam_role.bedrock_agent.arn} ${data.aws_bedrock_foundation_model.agent.model_id}"
+  }
+
+}
+
+resource "local_file" "agent_id" {
+  content    = file("${path.module}/scripts/bedrock_agent_id.txt")
+  filename   = "${path.module}/scripts/bedrock_agent_id.txt"
+  depends_on = [null_resource.bedrock_agent]
 }
 
 resource "aws_bedrockagent_agent_action_group" "this" {
-  action_group_name          = var.agent_action_group
-  agent_id                   = aws_bedrockagent_agent.this.id
+  action_group_name = var.agent_action_group
+  # agent_id                   = aws_bedrockagent_agent.this.id
+  agent_id                   = local_file.agent_id.content
   agent_version              = "DRAFT"
   description                = var.agent_action_group_description
   skip_resource_in_use_check = true
@@ -91,7 +140,8 @@ resource "aws_bedrockagent_agent_action_group" "this" {
 }
 
 resource "aws_bedrockagent_agent_knowledge_base_association" "this" {
-  agent_id             = aws_bedrockagent_agent.this.id
+  # agent_id             = aws_bedrockagent_agent.this.id
+  agent_id             = local_file.agent_id.content
   description          = var.agent_kb_association_description
   knowledge_base_id    = aws_bedrockagent_knowledge_base.this.id
   knowledge_base_state = "ENABLED"
@@ -100,15 +150,23 @@ resource "aws_bedrockagent_agent_knowledge_base_association" "this" {
 # Agent must be prepared after changes are made
 resource "null_resource" "agent_preparation" {
   triggers = {
-    forex_api_state = sha256(jsonencode(aws_bedrockagent_agent_action_group.this))
-    forex_kb_state  = sha256(jsonencode(aws_bedrockagent_knowledge_base.this))
+    api_state = sha256(jsonencode(aws_bedrockagent_agent_action_group.this))
+    kb_state  = sha256(jsonencode(aws_bedrockagent_knowledge_base.this))
   }
   provisioner "local-exec" {
-    command = "aws bedrock-agent prepare-agent --agent-id ${aws_bedrockagent_agent.this.id} --region ${local.region}"
+    # command = "aws bedrock-agent prepare-agent --agent-id ${aws_bedrockagent_agent.this.id} --region ${local.region}"
+    command = "aws bedrock-agent prepare-agent --agent-id ${local_file.agent_id.content} --region ${local.region}"
   }
   depends_on = [
-    aws_bedrockagent_agent.this,
+    # aws_bedrockagent_agent.this,
+    local_file.agent_id,
     aws_bedrockagent_agent_action_group.this,
     aws_bedrockagent_knowledge_base.this
   ]
+}
+
+resource "aws_bedrockagent_agent_alias" "this" {
+  # agent_id         = aws_bedrockagent_agent.this.id
+  agent_id         = local_file.agent_id.content
+  agent_alias_name = var.agent_name
 }

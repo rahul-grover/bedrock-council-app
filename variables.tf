@@ -74,12 +74,6 @@ variable "agent_description" {
   default     = "e2e-rag-agent"
 }
 
-variable "agent_instruction" {
-  description = "Provide clear and specific instructions for the task the Agent will perform."
-  type        = string
-  default     = "Role: You are an investment analyst responsible for creating portfolios, researching companies, summarizing documents, and formatting emails."
-}
-
 variable "agent_action_group" {
   description = "The action group name."
   type        = string

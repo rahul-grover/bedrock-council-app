@@ -40,12 +40,12 @@ output "bedrock_kb_arn" {
 # Bedrock Agent
 ################################################################################
 
-output "bedrock_agent_arn" {
-  description = "ARN of the agent"
-  value       = aws_bedrockagent_agent.this.agent_arn
-}
+# output "bedrock_agent_arn" {
+#   description = "ARN of the agent"
+#   value       = aws_bedrockagent_agent.this.agent_arn
+# }
 
-output "bedrock_agent_id" {
-  description = "Unique identifier of the agent"
-  value       = aws_bedrockagent_agent.this.agent_id
-}
+# output "bedrock_agent_id" {
+#   description = "Unique identifier of the agent"
+#   value       = aws_bedrockagent_agent.this.agent_id
+# }
