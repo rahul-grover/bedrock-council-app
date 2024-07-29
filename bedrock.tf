@@ -119,8 +119,8 @@ resource "null_resource" "bedrock_agent" {
 }
 
 resource "local_file" "agent_id" {
-  content    = file("bedrock_agent_id.txt")
-  filename   = "${path.module}/bedrock_agent_id.txt"
+  content    = file("${path.module}/scripts/bedrock_agent_id.txt")
+  filename   = "${path.module}/scripts/bedrock_agent_id.txt"
   depends_on = [null_resource.bedrock_agent]
 }
 
