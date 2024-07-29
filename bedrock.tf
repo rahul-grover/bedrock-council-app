@@ -113,21 +113,33 @@ resource "null_resource" "bedrock_agent" {
   }
 
   provisioner "local-exec" {
-    command = "sh scripts/manage_bedrock_agent.sh create ${var.agent_name} ${local.region} ${aws_iam_role.bedrock_agent.arn} ${data.aws_bedrock_foundation_model.agent.model_id}"
+    command = <<EOT
+      sh ./scripts/manage_bedrock_agent.sh create \
+        ${var.agent_name} ${local.region} \
+        ${aws_iam_role.bedrock_agent.arn} \
+        ${data.aws_bedrock_foundation_model.agent.model_id}
+    EOT
   }
 
 }
 
-resource "local_file" "agent_id" {
-  content    = file("${path.module}/scripts/bedrock_agent_id.txt")
-  filename   = "${path.module}/scripts/bedrock_agent_id.txt"
-  depends_on = [null_resource.bedrock_agent]
+data "external" "agent_id" {
+  program = [
+    "bash", "${path.module}/scripts/manage_bedrock_agent.sh",
+    "get",
+    var.agent_name,
+    local.region
+  ]
+
+  depends_on = [
+    null_resource.bedrock_agent
+  ]
 }
 
 resource "aws_bedrockagent_agent_action_group" "this" {
   action_group_name = var.agent_action_group
   # agent_id                   = aws_bedrockagent_agent.this.id
-  agent_id                   = local_file.agent_id.content
+  agent_id                   = data.external.agent_id.result["agent_id"]
   agent_version              = "DRAFT"
   description                = var.agent_action_group_description
   skip_resource_in_use_check = true
@@ -138,17 +150,16 @@ resource "aws_bedrockagent_agent_action_group" "this" {
     payload = file("${path.module}/lambda/knowledge-base/schema.yaml")
   }
 
-  depends_on = [null_resource.bedrock_agent]
+
 }
 
 resource "aws_bedrockagent_agent_knowledge_base_association" "this" {
   # agent_id             = aws_bedrockagent_agent.this.id
-  agent_id             = local_file.agent_id.content
+  agent_id             = data.external.agent_id.result["agent_id"]
   description          = var.agent_kb_association_description
   knowledge_base_id    = aws_bedrockagent_knowledge_base.this.id
   knowledge_base_state = "ENABLED"
 
-  depends_on = [null_resource.bedrock_agent]
 }
 
 # Agent must be prepared after changes are made
@@ -159,20 +170,25 @@ resource "null_resource" "agent_preparation" {
   }
   provisioner "local-exec" {
     # command = "aws bedrock-agent prepare-agent --agent-id ${aws_bedrockagent_agent.this.id} --region ${local.region}"
-    command = "aws bedrock-agent prepare-agent --agent-id ${local_file.agent_id.content} --region ${local.region}"
+    command = <<EOT
+      aws bedrock-agent prepare-agent --agent-id ${data.external.agent_id.result["agent_id"]} --region ${local.region}
+      sleep 20
+    EOT
   }
   depends_on = [
     # aws_bedrockagent_agent.this,
-    null_resource.bedrock_agent,
     aws_bedrockagent_agent_action_group.this,
-    aws_bedrockagent_knowledge_base.this
+    aws_bedrockagent_knowledge_base.this,
+    data.external.agent_id
   ]
 }
 
 resource "aws_bedrockagent_agent_alias" "this" {
   # agent_id         = aws_bedrockagent_agent.this.id
-  agent_id         = local_file.agent_id.content
+  agent_id         = data.external.agent_id.result["agent_id"]
   agent_alias_name = var.agent_name
 
-  depends_on = [null_resource.bedrock_agent]
+  depends_on = [
+    null_resource.agent_preparation
+  ]
 }
