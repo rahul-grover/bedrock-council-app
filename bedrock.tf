@@ -137,6 +137,7 @@ resource "aws_bedrockagent_agent_action_group" "this" {
   api_schema {
     payload = file("${path.module}/lambda/knowledge-base/schema.yaml")
   }
+  
   depends_on = [null_resource.bedrock_agent]
 }
 
@@ -170,5 +171,6 @@ resource "aws_bedrockagent_agent_alias" "this" {
   # agent_id         = aws_bedrockagent_agent.this.id
   agent_id         = local_file.agent_id.content
   agent_alias_name = var.agent_name
+  
   depends_on       = [null_resource.bedrock_agent]
 }
