@@ -158,6 +158,10 @@ resource "aws_bedrockagent_agent_action_group" "this" {
     payload = file("${path.module}/lambda/knowledge-base/schema.yaml")
   }
 
+  depends_on = [
+    null_resource.bedrock_agent,
+    data.external.agent_id
+  ]
 
 }
 
@@ -167,6 +171,11 @@ resource "aws_bedrockagent_agent_knowledge_base_association" "this" {
   description          = var.agent_kb_association_description
   knowledge_base_id    = aws_bedrockagent_knowledge_base.this.id
   knowledge_base_state = "ENABLED"
+
+  depends_on = [
+    null_resource.bedrock_agent,
+    data.external.agent_id
+  ]
 
 }
 
@@ -197,6 +206,7 @@ resource "aws_bedrockagent_agent_alias" "this" {
   agent_alias_name = var.agent_name
 
   depends_on = [
-    null_resource.agent_preparation
+    null_resource.bedrock_agent,
+    data.external.agent_id
   ]
 }
