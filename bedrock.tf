@@ -137,7 +137,7 @@ resource "aws_bedrockagent_agent_action_group" "this" {
   api_schema {
     payload = file("${path.module}/lambda/knowledge-base/schema.yaml")
   }
-  
+
   depends_on = [null_resource.bedrock_agent]
 }
 
@@ -147,6 +147,8 @@ resource "aws_bedrockagent_agent_knowledge_base_association" "this" {
   description          = var.agent_kb_association_description
   knowledge_base_id    = aws_bedrockagent_knowledge_base.this.id
   knowledge_base_state = "ENABLED"
+
+  depends_on = [null_resource.bedrock_agent]
 }
 
 # Agent must be prepared after changes are made
@@ -161,7 +163,7 @@ resource "null_resource" "agent_preparation" {
   }
   depends_on = [
     # aws_bedrockagent_agent.this,
-    local_file.agent_id,
+    null_resource.bedrock_agent,
     aws_bedrockagent_agent_action_group.this,
     aws_bedrockagent_knowledge_base.this
   ]
@@ -171,6 +173,6 @@ resource "aws_bedrockagent_agent_alias" "this" {
   # agent_id         = aws_bedrockagent_agent.this.id
   agent_id         = local_file.agent_id.content
   agent_alias_name = var.agent_name
-  
-  depends_on       = [null_resource.bedrock_agent]
+
+  depends_on = [null_resource.bedrock_agent]
 }
