@@ -150,7 +150,11 @@ resource "aws_bedrockagent_agent_action_group" "this" {
     payload = file("${path.module}/lambda/knowledge-base/schema.yaml")
   }
 
+<<<<<<< HEAD
 
+=======
+  depends_on = [null_resource.bedrock_agent]
+>>>>>>> ecbc3d95ab8fce973265d40635b5f41299c0a2d2
 }
 
 resource "aws_bedrockagent_agent_knowledge_base_association" "this" {
