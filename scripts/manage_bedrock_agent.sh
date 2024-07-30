@@ -37,7 +37,7 @@ case $ACTION in
     create)  
         if [ -z "$AGENT_ID" ]; then  
             echo "Agent '$AGENT_NAME' does not exist. Creating a new agent..."  
-            AGENT_ID=$(aws bedrock-agent create-agent --agent-name "$AGENT_NAME" --region "$REGION" --instruction "$AGENT_INSTRUCTION" --agent-resource-role-arn "$ROLE_ARN" --foundation-model "$MODEL" --prompt-override-configuration "$prompt_override_json" --version "1" --query 'agent.agentId' --output text)  
+            AGENT_ID=$(aws bedrock-agent create-agent --agent-name "$AGENT_NAME" --region "$REGION" --instruction "$AGENT_INSTRUCTION" --agent-resource-role-arn "$ROLE_ARN" --foundation-model "$MODEL" --prompt-override-configuration "$prompt_override_json" --query 'agent.agentId' --output text)  
             if [ -z "$AGENT_ID" ]; then  
                 echo "Failed to create agent '$AGENT_NAME'."  
                 exit 1  
@@ -45,7 +45,7 @@ case $ACTION in
             echo "Agent '$AGENT_NAME' created with ID: $AGENT_ID"
         else  
             echo "Updating agent '$AGENT_NAME'..."  
-            aws bedrock-agent update-agent --agent-id "$AGENT_ID" --agent-name "$AGENT_NAME" --region "$REGION" --instruction "$AGENT_INSTRUCTION" --agent-resource-role-arn "$ROLE_ARN" --foundation-model "$MODEL" --prompt-override-configuration "$prompt_override_json" --version "1" || {  
+            aws bedrock-agent update-agent --agent-id "$AGENT_ID" --agent-name "$AGENT_NAME" --region "$REGION" --instruction "$AGENT_INSTRUCTION" --agent-resource-role-arn "$ROLE_ARN" --foundation-model "$MODEL" --prompt-override-configuration "$prompt_override_json" || {  
                 echo "Failed to update agent '$AGENT_NAME'."  
                 exit 1  
             }  
@@ -55,4 +55,17 @@ case $ACTION in
     get)
         echo "{\"agent_id\": \"$AGENT_ID\"}"
         ;;
+    prepare)
+        aws bedrock-agent prepare-agent --agent-id "$AGENT_ID" --region "$REGION"
+
+        # Wait for the agent to be prepared
+        while true; do
+            agent_status=$(aws bedrock-agent get-agent --agent-id "$AGENT_ID" --region "$REGION" --query 'agent.agentStatus' --output text)
+            if [ "$agent_status" = "PREPARED" ]; then
+                break
+            fi
+            echo "Agent is not ready yet. Waiting for 10 seconds..."
+            echo "Agent status: $agent_status"
+            sleep 10
+        done
 esac
