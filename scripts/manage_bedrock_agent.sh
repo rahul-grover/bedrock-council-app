@@ -37,7 +37,7 @@ case $ACTION in
     create)  
         if [ -z "$AGENT_ID" ]; then  
             echo "Agent '$AGENT_NAME' does not exist. Creating a new agent..."  
-            AGENT_ID=$(aws bedrock-agent create-agent --agent-name "$AGENT_NAME" --region "$REGION" --instruction "$AGENT_INSTRUCTION" --agent-resource-role-arn "$ROLE_ARN" --foundation-model "$MODEL" --prompt-override-configuration "$prompt_override_json" --query 'agent.agentId' --output text)  
+            AGENT_ID=$(aws bedrock-agent create-agent --agent-name "$AGENT_NAME" --region "$REGION" --instruction "$AGENT_INSTRUCTION" --agent-resource-role-arn "$ROLE_ARN" --foundation-model "$MODEL" --prompt-override-configuration "$prompt_override_json" --version "1" --query 'agent.agentId' --output text)  
             if [ -z "$AGENT_ID" ]; then  
                 echo "Failed to create agent '$AGENT_NAME'."  
                 exit 1  
@@ -45,7 +45,7 @@ case $ACTION in
             echo "Agent '$AGENT_NAME' created with ID: $AGENT_ID"
         else  
             echo "Updating agent '$AGENT_NAME'..."  
-            aws bedrock-agent update-agent --agent-id "$AGENT_ID" --agent-name "$AGENT_NAME" --region "$REGION" --instruction "$AGENT_INSTRUCTION" --agent-resource-role-arn "$ROLE_ARN" --foundation-model "$MODEL" --prompt-override-configuration "$prompt_override_json" || {  
+            aws bedrock-agent update-agent --agent-id "$AGENT_ID" --agent-name "$AGENT_NAME" --region "$REGION" --instruction "$AGENT_INSTRUCTION" --agent-resource-role-arn "$ROLE_ARN" --foundation-model "$MODEL" --prompt-override-configuration "$prompt_override_json" --version "1" || {  
                 echo "Failed to update agent '$AGENT_NAME'."  
                 exit 1  
             }  
