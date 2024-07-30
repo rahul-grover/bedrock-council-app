@@ -49,6 +49,24 @@ prepare_agent() {
     done
 }
 
+delete_agent() {
+    local agent_name="$1"
+    local region="$2"
+    local agent_id=$(aws bedrock-agent list-agents --query "agentSummaries[?agentName=='$agent_name'].agentId" --output text --region "$region")
+
+    if [ -z "$agent_id" ]; then
+        echo "Agent '$agent_name' does not exist."
+        return 0
+    fi
+
+    echo "Deleting agent '$agent_name'..."
+    aws bedrock-agent delete-agent --agent-id "$agent_id" --region "$region" || {
+        echo "Failed to delete agent '$agent_name'."
+        return 1
+    }
+    echo "Agent '$agent_name' deleted successfully."
+}
+
 # Read input parameters
 ACTION=$1
 AGENT_NAME=$2
@@ -97,6 +115,9 @@ case $ACTION in
     prepare)
         agent_id=$(aws bedrock-agent list-agents --query "agentSummaries[?agentName=='$AGENT_NAME'].agentId" --output text --region "$REGION")
         prepare_agent "$agent_id" "$REGION"
+        ;;
+    delete)
+        delete_agent "$AGENT_NAME" "$REGION"
         ;;
     *)
         echo "Invalid action: $ACTION"
