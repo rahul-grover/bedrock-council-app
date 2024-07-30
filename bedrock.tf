@@ -138,7 +138,7 @@ resource "null_resource" "bedrock_agent" {
 resource "null_resource" "agent_deletion" {
   triggers = {
     agent_name = var.agent_name
-    region = local.region
+    region     = local.region
   }
   provisioner "local-exec" {
     when    = destroy
