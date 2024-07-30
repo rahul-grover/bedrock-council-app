@@ -1,15 +1,69 @@
-#!/bin/bash  
+#!/bin/bash
 
-ACTION=$1  
-AGENT_NAME=$2  
-REGION=$3  
-ROLE_ARN=$4  
+# Define functions
+create_or_update_agent() {
+    local agent_name="$1"
+    local region="$2"
+    local role_arn="$3"
+    local model="$4"
+    local agent_id=$(aws bedrock-agent list-agents --query "agentSummaries[?agentName=='$agent_name'].agentId" --output text --region "$region")
+
+    if [ -z "$agent_id" ]; then
+        echo "Agent '$agent_name' does not exist. Creating a new agent..."
+        agent_id=$(aws bedrock-agent create-agent --agent-name "$agent_name" --region "$region" --instruction "$AGENT_INSTRUCTION" --agent-resource-role-arn "$role_arn" --foundation-model "$model" --prompt-override-configuration "$prompt_override_json" --query 'agent.agentId' --output text)
+        if [ -z "$agent_id" ]; then
+            echo "Failed to create agent '$agent_name'."
+            return 1
+        fi
+        echo "Agent '$agent_name' created with ID: $agent_id"
+    else
+        echo "Updating agent '$agent_name'..."
+        aws bedrock-agent update-agent --agent-id "$agent_id" --agent-name "$agent_name" --region "$region" --instruction "$AGENT_INSTRUCTION" --agent-resource-role-arn "$role_arn" --foundation-model "$model" --prompt-override-configuration "$prompt_override_json" || {
+            echo "Failed to update agent '$agent_name'."
+            return 1
+        }
+        echo "Agent '$agent_name' updated successfully."
+    fi
+}
+
+prepare_agent() {
+    local agent_id="$1"
+    local region="$2"
+    local agent_status=$(aws bedrock-agent get-agent --agent-id "$agent_id" --region "$region" --query 'agent.agentStatus' --output text 2>/dev/null)
+
+    if [ "$agent_status" = "PREPARED" ]; then
+        return 0
+    fi
+
+    aws bedrock-agent prepare-agent --agent-id "$agent_id" --region "$region"
+
+    # Wait for the agent to be prepared
+    while true; do
+        agent_status=$(aws bedrock-agent get-agent --agent-id "$agent_id" --region "$region" --query 'agent.agentStatus' --output text)
+        if [ "$agent_status" = "PREPARED" ]; then
+            break
+        fi
+        echo "Agent is not ready yet. Waiting for 10 seconds..."
+        echo "Agent status: $agent_status"
+        sleep 10
+    done
+}
+
+# Read input parameters
+ACTION=$1
+AGENT_NAME=$2
+REGION=$3
+ROLE_ARN=$4
 MODEL=$5
 
-AGENT_INSTRUCTION=$(cat ./prompt-templates/agent_instructions.txt)  
-
+# Read agent instructions and prompt template
+AGENT_INSTRUCTION=$(cat ./prompt-templates/agent_instructions.txt)
 prompt_template=$(cat "./prompt-templates/orchestration.txt")
+
+# Escape prompt template for JSON
 escaped_prompt=$(echo "$prompt_template" | awk '{printf "%s\\n", $0}' | sed 's/"/\\"/g')
+
+# Create prompt override JSON
 prompt_override_json=$(cat <<EOT
 {
     "promptConfigurations": [
@@ -31,47 +85,21 @@ prompt_override_json=$(cat <<EOT
 EOT
 )
 
-AGENT_ID=$(aws bedrock-agent list-agents --query "agentSummaries[?agentName=='$AGENT_NAME'].agentId" --output text --region "$REGION")  
-
-case $ACTION in  
-    create)  
-        if [ -z "$AGENT_ID" ]; then  
-            echo "Agent '$AGENT_NAME' does not exist. Creating a new agent..."  
-            AGENT_ID=$(aws bedrock-agent create-agent --agent-name "$AGENT_NAME" --region "$REGION" --instruction "$AGENT_INSTRUCTION" --agent-resource-role-arn "$ROLE_ARN" --foundation-model "$MODEL" --prompt-override-configuration "$prompt_override_json" --query 'agent.agentId' --output text)  
-            if [ -z "$AGENT_ID" ]; then  
-                echo "Failed to create agent '$AGENT_NAME'."  
-                exit 1  
-            fi  
-            echo "Agent '$AGENT_NAME' created with ID: $AGENT_ID"
-        else  
-            echo "Updating agent '$AGENT_NAME'..."  
-            aws bedrock-agent update-agent --agent-id "$AGENT_ID" --agent-name "$AGENT_NAME" --region "$REGION" --instruction "$AGENT_INSTRUCTION" --agent-resource-role-arn "$ROLE_ARN" --foundation-model "$MODEL" --prompt-override-configuration "$prompt_override_json" || {  
-                echo "Failed to update agent '$AGENT_NAME'."  
-                exit 1  
-            }  
-            echo "Agent '$AGENT_NAME' updated successfully."
-        fi
+# Execute based on the action
+case $ACTION in
+    create)
+        create_or_update_agent "$AGENT_NAME" "$REGION" "$ROLE_ARN" "$MODEL"
         ;;
     get)
-        echo "{\"agent_id\": \"$AGENT_ID\"}"
+        agent_id=$(aws bedrock-agent list-agents --query "agentSummaries[?agentName=='$AGENT_NAME'].agentId" --output text --region "$REGION")
+        echo "{\"agent_id\": \"$agent_id\"}"
         ;;
     prepare)
-        agent_status=$(aws bedrock-agent get-agent --agent-id "$AGENT_ID" --region "$REGION" --query 'agent.agentStatus' --output text  2>/dev/null)
-
-        if [ "$agent_status" = "PREPARED" ]; then
-            exit 0
-        fi
-
-        aws bedrock-agent prepare-agent --agent-id "$AGENT_ID" --region "$REGION"
-
-        # Wait for the agent to be prepared
-        while true; do
-            agent_status=$(aws bedrock-agent get-agent --agent-id "$AGENT_ID" --region "$REGION" --query 'agent.agentStatus' --output text)
-            if [ "$agent_status" = "PREPARED" ]; then
-                break
-            fi
-            echo "Agent is not ready yet. Waiting for 10 seconds..."
-            echo "Agent status: $agent_status"
-            sleep 10
-        done
+        agent_id=$(aws bedrock-agent list-agents --query "agentSummaries[?agentName=='$AGENT_NAME'].agentId" --output text --region "$REGION")
+        prepare_agent "$agent_id" "$REGION"
+        ;;
+    *)
+        echo "Invalid action: $ACTION"
+        exit 1
+        ;;
 esac
