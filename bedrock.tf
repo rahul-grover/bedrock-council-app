@@ -136,10 +136,14 @@ resource "null_resource" "bedrock_agent" {
 }
 
 resource "null_resource" "agent_deletion" {
+  triggers = {
+    agent_name = var.agent_name
+    region = local.region
+  }
   provisioner "local-exec" {
     when    = destroy
     command = <<EOT
-      sh ./scripts/manage_bedrock_agent.sh delete ${var.agent_name} ${local.region}
+      sh ./scripts/manage_bedrock_agent.sh delete ${self.triggers.agent_name} ${self.triggers.region}
     EOT
   }
 }
