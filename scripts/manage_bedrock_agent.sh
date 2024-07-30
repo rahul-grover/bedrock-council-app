@@ -31,7 +31,7 @@ prompt_override_json=$(cat <<EOT
 EOT
 )
 
-AGENT_ID=$(aws bedrock-agent list-agents --query "agentSummaries[?agentName=='$AGENT_NAME'].agentId" --output text)  
+AGENT_ID=$(aws bedrock-agent list-agents --query "agentSummaries[?agentName=='$AGENT_NAME'].agentId" --output text --region "$REGION")  
 
 case $ACTION in  
     create)  
