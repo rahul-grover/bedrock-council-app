@@ -56,6 +56,12 @@ case $ACTION in
         echo "{\"agent_id\": \"$AGENT_ID\"}"
         ;;
     prepare)
+        agent_status=$(aws bedrock-agent get-agent --agent-id "$AGENT_ID" --region "$REGION" --query 'agent.agentStatus' --output text  2>/dev/null)
+
+        if [ "$agent_status" = "PREPARED" ]; then
+            exit 0
+        fi
+
         aws bedrock-agent prepare-agent --agent-id "$AGENT_ID" --region "$REGION"
 
         # Wait for the agent to be prepared
