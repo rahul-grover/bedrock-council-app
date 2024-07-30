@@ -111,7 +111,7 @@ resource "aws_opensearchserverless_access_policy" "pipeline" {
       }
     ],
     Principal = [
-      data.aws_caller_identity.current.arn,
+      # data.aws_caller_identity.current.arn,
       "arn:aws:sts::${local.account_id}:assumed-role/${var.pipeline_iam_role}/*",
       "arn:aws:iam::${local.account_id}:role/${var.pipeline_iam_role}"
     ]
