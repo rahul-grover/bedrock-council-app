@@ -109,7 +109,11 @@ resource "aws_bedrockagent_data_source" "this" {
 
 resource "null_resource" "bedrock_agent" {
   triggers = {
-    always_run = timestamp()
+    always_run = filesha256("${path.module}/scripts/manage_bedrock_agent.sh")
+    templates = jsonencode({
+      for fn in fileset("${path.module}/prompt-templates", "**") :
+      fn => filesha256("${path.module}/prompt-templates/${fn}")
+    })
   }
 
   provisioner "local-exec" {
@@ -142,14 +146,6 @@ data "external" "agent_id" {
   depends_on = [
     null_resource.bedrock_agent
   ]
-
-  lifecycle {
-    replace_triggered_by = [
-      var.agent_name,
-      local.region,
-    ]
-  }
-
 }
 
 resource "aws_bedrockagent_agent_action_group" "this" {
