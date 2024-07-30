@@ -142,6 +142,14 @@ data "external" "agent_id" {
   depends_on = [
     null_resource.bedrock_agent
   ]
+
+  lifecycle {
+    replace_triggered_by = [
+      var.agent_name,
+      local.region,
+    ]
+  }
+
 }
 
 resource "aws_bedrockagent_agent_action_group" "this" {
