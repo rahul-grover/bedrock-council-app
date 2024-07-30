@@ -188,20 +188,10 @@ resource "null_resource" "agent_preparation" {
   provisioner "local-exec" {
     # command = "aws bedrock-agent prepare-agent --agent-id ${aws_bedrockagent_agent.this.id} --region ${local.region}"
     command = <<EOT
-      aws bedrock-agent prepare-agent --agent-id ${data.external.agent_id.result["agent_id"]} --region ${local.region}
-
-      # Wait for the agent to be prepared
-      while true; do
-        agent_status=$(aws bedrock-agent get-agent --agent-id ${data.external.agent_id.result["agent_id"]} --region ${local.region} --query 'agent.agentStatus' --output text)
-        if [ "$agent_status" = "PREPARED" ]; then
-          break
-        fi
-        echo "Agent is not ready yet. Waiting for 10 seconds..."
-        echo "Agent status: $agent_status"
-        sleep 10
-      done
+      sh ./scripts/manage_bedrock_agent.sh prepare ${var.agent_name} ${local.region}
     EOT
   }
+
   depends_on = [
     # aws_bedrockagent_agent.this,
     aws_bedrockagent_agent_action_group.this,
