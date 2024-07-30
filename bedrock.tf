@@ -209,13 +209,12 @@ resource "null_resource" "agent_preparation" {
   ]
 }
 
-resource "aws_bedrockagent_agent_alias" "this" {
-  # agent_id         = aws_bedrockagent_agent.this.id
-  agent_id         = data.external.agent_id.result["agent_id"]
-  agent_alias_name = var.agent_name
-  agent_version = 1
+# resource "aws_bedrockagent_agent_alias" "this" {
+#   # agent_id         = aws_bedrockagent_agent.this.id
+#   agent_id         = data.external.agent_id.result["agent_id"]
+#   agent_alias_name = var.agent_name
 
-  depends_on = [
-    null_resource.agent_preparation
-  ]
-}
+#   depends_on = [
+#     null_resource.agent_preparation
+#   ]
+# }
