@@ -193,7 +193,7 @@ resource "null_resource" "agent_preparation" {
       # Wait for the agent to be prepared
       while true; do
         agent_status=$(aws bedrock-agent get-agent --agent-id ${data.external.agent_id.result["agent_id"]} --region ${local.region} --query 'agent.agentStatus' --output text)
-        if [ "$agent_status" == "PREPARED" ]; then
+        if [[ "$agent_status" == "PREPARED" ]]; then
           break
         fi
         echo "Agent is not ready yet. Waiting for 10 seconds..."
@@ -209,13 +209,12 @@ resource "null_resource" "agent_preparation" {
   ]
 }
 
-resource "aws_bedrockagent_agent_alias" "this" {
-  # agent_id         = aws_bedrockagent_agent.this.id
-  agent_id         = data.external.agent_id.result["agent_id"]
-  agent_alias_name = var.agent_name
+# resource "aws_bedrockagent_agent_alias" "this" {
+#   # agent_id         = aws_bedrockagent_agent.this.id
+#   agent_id         = data.external.agent_id.result["agent_id"]
+#   agent_alias_name = var.agent_name
 
-  depends_on = [
-    null_resource.bedrock_agent,
-    data.external.agent_id
-  ]
-}
+#   depends_on = [
+#     null_resource.agent_preparation
+#   ]
+# }
