@@ -179,7 +179,10 @@ resource "opensearch_index" "this" {
     }
   EOF
   force_destroy                  = true
-  depends_on                     = [aws_opensearchserverless_collection.this]
+  depends_on = [
+    aws_opensearchserverless_collection.this,
+    time_sleep.aws_iam_role_policy_bedrock_kb_oss
+  ]
 
   # [BUG] Index replacement with dynamic properties
   # https://github.com/opensearch-project/terraform-provider-opensearch/issues/175#issuecomment-2037404360
