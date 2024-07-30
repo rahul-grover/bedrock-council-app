@@ -43,3 +43,16 @@ The known issues are:
 
 3. **awscc_bedrock_agent creation unsuccessful with only required inputs**  
    Issue: [hashicorp/terraform-provider-awscc#1572](https://github.com/hashicorp/terraform-provider-awscc/issues/1572)
+
+### OpenSearch Serverless Issue
+
+OpenSearch serverless sometimes fails with the following error:
+
+```
+Error: Provider produced inconsistent result after apply
+When applying changes to aws_opensearchserverless_access_policy.pipeline, provider "provider[\"registry.terraform.io/hashicorp/aws\"]" produced an unexpected new value: .policy_version: was cty.StringVal("MTcyMjMwNTQ4ODIwMV8y"), but now cty.StringVal("MTcyMjMwNTk1NDczN18z").
+
+This is a bug in the provider, which should be reported in the provider's own issue tracker.
+```
+
+The workaround for this issue is to use the `hashicorp/aws` provider version `5.48`.
