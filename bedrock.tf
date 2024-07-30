@@ -197,6 +197,7 @@ resource "null_resource" "agent_preparation" {
           break
         fi
         echo "Agent is not ready yet. Waiting for 10 seconds..."
+        echo "Agent status: $agent_status"
         sleep 10
       done
     EOT
