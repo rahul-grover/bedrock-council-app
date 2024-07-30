@@ -193,7 +193,7 @@ resource "null_resource" "agent_preparation" {
       # Wait for the agent to be prepared
       while true; do
         agent_status=$(aws bedrock-agent get-agent --agent-id ${data.external.agent_id.result["agent_id"]} --region ${local.region} --query 'agent.agentStatus' --output text)
-        if [[ "$agent_status" == "PREPARED" ]]; then
+        if [ "$agent_version_status" = "PREPARED" ]; then
           break
         fi
         echo "Agent is not ready yet. Waiting for 10 seconds..."
