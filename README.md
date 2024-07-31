@@ -31,7 +31,7 @@ This repository contains the Terraform code for deploying the Bedrock Council Ap
 
 ## Known Issues and Workarounds
 
-As of today (30/07/2024), there are a few known issues with the Terraform AWS providers related to Bedrock agent management. To work around these issues, we use the [manage_bedrock_agent.sh](scripts/manage_bedrock_agent.sh) script to manage the Amazon Bedrock agent.
+As of today (30/07/2024), there are a few known issues with the Terraform AWS providers related to Bedrock agent management. To work around these issues, we use the [AWS Cloud Control API provider](https://registry.terraform.io/providers/hashicorp/awscc/latest).
 
 The known issues are:
 
