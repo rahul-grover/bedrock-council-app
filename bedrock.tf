@@ -99,9 +99,9 @@ resource "awscc_bedrock_agent" "this" {
         inference_configuration = {
           max_length = 2048
           stop_sequences = [
-            "$invoke$",
-            "$answer$",
-            "$error$"
+            "</invoke>",
+            "</answer>",
+            "</error>"
           ]
           temperature = 0
           top_k       = 250
