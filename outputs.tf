@@ -28,24 +28,33 @@ output "opensearch_serverless_collection_id" {
 
 output "bedrock_kb_id" {
   description = "Unique identifier of the knowledge base"
-  value       = aws_bedrockagent_knowledge_base.this.id
+  value       = awscc_bedrock_knowledge_base.this.knowledge_base_id
 }
 
 output "bedrock_kb_arn" {
   description = "ARN of the knowledge base"
-  value       = aws_bedrockagent_knowledge_base.this.id
+  value       = awscc_bedrock_knowledge_base.this.knowledge_base_arn
 }
 
 ################################################################################
 # Bedrock Agent
 ################################################################################
 
-# output "bedrock_agent_arn" {
-#   description = "ARN of the agent"
-#   value       = aws_bedrockagent_agent.this.agent_arn
-# }
+output "bedrock_agent_arn" {
+  description = "ARN of the agent"
+  value       = awscc_bedrock_agent.this.agent_arn
+}
 
-# output "bedrock_agent_id" {
-#   description = "Unique identifier of the agent"
-#   value       = aws_bedrockagent_agent.this.agent_id
-# }
+output "bedrock_agent_id" {
+  description = "Unique identifier of the agent"
+  value       = awscc_bedrock_agent.this.agent_id
+}
+
+################################################################################
+# S3
+################################################################################
+
+output "s3_bucket" {
+    description = "Name of the bucket"
+  value       = aws_s3_bucket.bedrock_kb.id
+}
