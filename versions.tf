@@ -6,7 +6,7 @@ terraform {
     }
     awscc = {
       source  = "hashicorp/awscc"
-      version = "1.7.0"
+      version = "~> 1.7.0"
     }
     opensearch = {
       source  = "opensearch-project/opensearch"

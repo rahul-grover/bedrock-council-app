@@ -154,7 +154,7 @@ resource "aws_iam_role_policy" "bedrock_agent_kb" {
       {
         Action   = "bedrock:Retrieve"
         Effect   = "Allow"
-        Resource = aws_bedrockagent_knowledge_base.this.arn
+        Resource = awscc_bedrock_knowledge_base.this.knowledge_base_arn
       }
     ]
   })
