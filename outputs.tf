@@ -55,6 +55,6 @@ output "bedrock_agent_id" {
 ################################################################################
 
 output "s3_bucket" {
-    description = "Name of the bucket"
+  description = "Name of the bucket"
   value       = aws_s3_bucket.bedrock_kb.id
 }

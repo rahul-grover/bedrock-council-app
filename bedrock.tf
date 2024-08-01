@@ -93,9 +93,28 @@ resource "awscc_bedrock_agent" "this" {
   }]
 
   prompt_override_configuration = {
+    override_lambda = aws_lambda_function.parser.arn
     prompt_configurations = [
       {
-        base_prompt_template = file("${path.module}/prompt-templates/orchestration.txt")
+        base_prompt_template = file("${path.module}/prompt-templates/pre_processing.json")
+        inference_configuration = {
+          max_length = 2048
+          stop_sequences = [
+            "</invoke>",
+            "</answer>",
+            "</error>"
+          ]
+          temperature = 0
+          top_k       = 250
+          top_p       = 1
+        }
+        parser_mode          = "OVERRIDDEN"
+        prompt_creation_mode = "OVERRIDDEN"
+        prompt_state         = "ENABLED"
+        prompt_type          = "PRE_PROCESSING"
+      },
+      {
+        base_prompt_template = file("${path.module}/prompt-templates/orchestration.json")
         inference_configuration = {
           max_length = 2048
           stop_sequences = [
