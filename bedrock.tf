@@ -134,6 +134,11 @@ resource "awscc_bedrock_agent" "this" {
     ]
   }
 
+  guardrail_configuration = {
+    guardrail_identifier = aws_bedrock_guardrail.this.guardrail_id
+    guardrail_version = aws_bedrock_guardrail.this.version
+  }
+
   tags = local.tags
   depends_on = [
     aws_iam_role_policy.bedrock_agent_kb,
@@ -158,6 +163,7 @@ resource "aws_bedrock_guardrail" "this" {
   blocked_input_messaging   = var.gr_blocked_input_messaging
   blocked_outputs_messaging = var.gr_blocked_output_messaging
   description               = var.gr_name
+  tags                      = local.tags
 
   content_policy_config {
     filters_config {
@@ -170,7 +176,7 @@ resource "aws_bedrock_guardrail" "this" {
   sensitive_information_policy_config {
     pii_entities_config {
       action = "ANONYMIZE"
-      type   = "ADDRESS"
+      type   = "NAME"
     }
 
     regexes_config {
