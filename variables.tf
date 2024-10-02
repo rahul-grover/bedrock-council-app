@@ -109,3 +109,25 @@ variable "overlap_percentage" {
   description = "Percent overlap in each chunk"
   default     = ""
 }
+
+################################################################################
+# Bedrock Guardrails
+################################################################################
+
+variable "gr_name" {
+  description = "The guardrails name."
+  type        = string
+  default     = "e2e-rag-gr"
+}
+
+variable "gr_blocked_input_messaging" {
+  description = "Message to return when the guardrail blocks a prompt."
+  type        = string
+  default     = "This prompt is not accepted"
+}
+
+variable "gr_blocked_output_messaging" {
+  description = "Message to return when the guardrail blocks a model response."
+  type        = string
+  default     = "The model response is not accepted"
+}

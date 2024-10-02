@@ -148,3 +148,54 @@ resource "awscc_bedrock_agent_alias" "this" {
 
   tags = local.tags
 }
+
+################################################################################
+# Bedrock Guardrails
+################################################################################
+
+resource "aws_bedrock_guardrail" "this" {
+  name                      = var.gr_name
+  blocked_input_messaging   = var.gr_blocked_input_messaging
+  blocked_outputs_messaging = var.gr_blocked_output_messaging
+  description               = var.gr_name
+
+  content_policy_config {
+    filters_config {
+      input_strength  = "MEDIUM"
+      output_strength = "MEDIUM"
+      type            = "HATE"
+    }
+  }
+
+  sensitive_information_policy_config {
+    pii_entities_config {
+      action = "BLOCK"
+      type   = "NAME"
+    }
+
+    regexes_config {
+      action      = "BLOCK"
+      description = "example regex"
+      name        = "regex_example"
+      pattern     = "^\\d{3}-\\d{2}-\\d{4}$"
+    }
+  }
+
+  topic_policy_config {
+    topics_config {
+      name       = "our_company_profit"
+      examples   = ["How much is our profit?"]
+      type       = "DENY"
+      definition = "We are only able to generate information of companies based off the SEC reports you provided."
+    }
+  }
+
+  word_policy_config {
+    managed_word_lists_config {
+      type = "PROFANITY"
+    }
+    words_config {
+      text = "HATE"
+    }
+  }
+}
