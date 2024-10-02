@@ -169,8 +169,8 @@ resource "aws_bedrock_guardrail" "this" {
 
   sensitive_information_policy_config {
     pii_entities_config {
-      action = "BLOCK"
-      type   = "NAME"
+      action = "ANONYMIZE"
+      type   = "ADDRESS"
     }
 
     regexes_config {
