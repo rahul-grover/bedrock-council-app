@@ -1,4 +1,4 @@
-data "aws_bedrock_foundation_model" "agent" {
+data "aws_bedrock_foundation_model" "agent_travel" {
   model_id = var.agent_model_id_travel
 }
 
@@ -12,11 +12,11 @@ data "aws_bedrock_foundation_model" "agent" {
 # https://github.com/hashicorp/terraform-provider-aws/issues/37903
 # aws_bedrockagent_agent resource fails to create due to inconsistent result after apply
 # https://github.com/hashicorp/terraform-provider-aws/issues/37168
-resource "awscc_bedrock_agent" "this" {
+resource "awscc_bedrock_agent" "agent_travel" {
   agent_name              = var.agent_name_travel
   agent_resource_role_arn = aws_iam_role.bedrock_agent.arn
   description             = var.agent_description
-  foundation_model        = data.aws_bedrock_foundation_model.agent.model_id
+  foundation_model        = data.aws_bedrock_foundation_model.agent_travel.model_id
   instruction             = file("${path.module}/prompt-templates/agent_instructions_travel.txt")
 
   idle_session_ttl_in_seconds = 600
@@ -52,7 +52,7 @@ resource "awscc_bedrock_agent" "this" {
   ]
 }
 
-resource "awscc_bedrock_agent_alias" "this" {
+resource "awscc_bedrock_agent_alias" "agent_travel" {
   agent_alias_name = var.agent_name_travel
   description      = var.agent_name_travel
   agent_id         = awscc_bedrock_agent.this.id
