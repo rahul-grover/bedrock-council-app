@@ -160,6 +160,25 @@ resource "aws_iam_role_policy" "bedrock_agent_kb" {
   })
 }
 
+resource "aws_iam_role_policy" "bedrock_agent_gr" {
+  name = "AmazonBedrockAgentBedrockGuardRailsPolicy_${var.agent_name}"
+  role = aws_iam_role.bedrock_agent.name
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action   = [
+          "bedrock:ApplyGuardrail",
+          "bedrock:ListGuardrails",
+          "bedrock:GetGuardrail"
+        ]
+        Effect   = "Allow"
+        Resource = aws_bedrock_guardrail.this.guardrail_arn
+      }
+    ]
+  })
+}
+
 ################################################################################
 # Bedrock Lambda IAM Role
 ################################################################################
