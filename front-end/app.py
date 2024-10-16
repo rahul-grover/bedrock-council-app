@@ -81,8 +81,6 @@ async def start():
     cl.user_session.set("session_id", str(uuid.uuid4()))
     cl.user_session.set("chat_history", [])
 
-
-
 @cl.on_message
 async def main(message: cl.Message):
     user_id = cl.user_session.get("user_id")
@@ -93,7 +91,7 @@ async def main(message: cl.Message):
     await msg.send()  # Send the message immediately to start streaming
     cl.user_session.set("current_msg", msg)
 
-    response = await orchestrator.route_request(message.content, user_id, session_id, {})
+    response:AgentResponse = await orchestrator.route_request(message.content, user_id, session_id, {})
 
     # Handle non-streaming responses
     if isinstance(response, AgentResponse) and response.streaming is False:
