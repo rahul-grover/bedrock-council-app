@@ -73,7 +73,7 @@ jobs:
               - **Citations**: (At least two citations from multiple sources with links)
             ### Overall Summary:
             - Reference similar prior summaries where applicable; provide a new summary if the changes are distinct.
-          ignore_patterns: '**/*.md,docs/**,.github/**'
+          ignore_patterns: '**/*.md,docs/**,.github/**,front-end/**,lambda/**,prompt-templates/**,scripts/**'
           debug: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
