@@ -189,3 +189,9 @@ variable "gr_blocked_output_messaging" {
   type        = string
   default     = "The model response is not accepted"
 }
+
+variable "secret_db_pass" {
+  description = "Secret database password."
+  type        = string
+  default     = "1234567890"
+}
