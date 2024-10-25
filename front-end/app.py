@@ -1,3 +1,4 @@
+import os
 import uuid
 import chainlit as cl
 from agents import create_tech_agent, use_travel_agent, use_council_and_finance_agent
