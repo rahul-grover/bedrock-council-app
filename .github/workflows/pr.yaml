@@ -10,7 +10,7 @@ permissions:
   pull-requests: write
 
 env:
-  AWS_REGION: 'us-east-1'
+  AWS_REGION: 'ap-southeast-2'
 
 jobs:
   analyze:
