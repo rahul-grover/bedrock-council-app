@@ -30,8 +30,8 @@ jobs:
       - name: Run Custom Analysis
         uses: severity1/custom-amazon-bedrock-agent-action@v0.9.0 # Replace with your action repository and version
         with:
-          agent_id: 'XYZ123LMNO' 
-          agent_alias_id: 'ABC123EFG'
+          agent_id: 'Y3J1LMXFWY' 
+          agent_alias_id: 'SLYB9YESUC'
           memory_id: 'TERRAFORM_EXPERT_MEM' # Check Model support
           action_prompt: |
             Role: You are a Terraform Expert
