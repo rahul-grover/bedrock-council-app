@@ -189,3 +189,31 @@ variable "gr_blocked_output_messaging" {
   type        = string
   default     = "The model response is not accepted"
 }
+
+################################################################################
+# EC2
+################################################################################
+
+variable "vpc_id" {
+  description = "The VPC ID where the EC2 instance will be launched"
+  type        = string
+  default     = "vpc-0cdfa09bf6e3016fa"
+}
+
+variable "ami_id" {
+  description = "The AMI ID for the EC2 instance"
+  type        = string
+  default     = "ami-0f71013b2c8bd2c29"
+}
+
+variable "ec2_role_name" {
+  description = "The name of the IAM role for the EC2 instance"
+  type        = string
+  default     = "ec2-bedrock-role-testing"
+}
+
+variable "key_name" {
+  description = "The name of the key pair to use for the EC2 instance"
+  type        = string
+  default = "bedrockkeytest"
+}

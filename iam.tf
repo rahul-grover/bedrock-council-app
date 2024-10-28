@@ -231,3 +231,63 @@ resource "aws_iam_role" "lambda_parser" {
   managed_policy_arns = [data.aws_iam_policy.lambda_basic_execution.arn]
 }
 
+################################################################################
+# Bedrock Lambda IAM Role
+################################################################################
+
+resource "aws_iam_role" "ec2_role" {
+  name = var.ec2_role_name
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [
+      {
+        Action = "sts:AssumeRole",
+        Effect = "Allow",
+        Principal = {
+          Service = "ec2.amazonaws.com"
+        }
+      }
+    ]
+  })
+}
+
+################################################################################
+# EC2 IAM Policy
+################################################################################
+
+resource "aws_iam_policy" "bedrock_full_access" {
+  name        = "AWSBedrockFullAccessRolePolicy"
+  description = "Bedrock full access policy for EC2"
+  policy      = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        "Effect": "Allow",
+        "Action": "bedrock:*",
+        "Resource": "*"
+      }
+    ]
+  })
+}
+
+################################################################################
+# EC2 IAM Policy Role Attachment
+################################################################################
+
+
+resource "aws_iam_role_policy_attachment" "attache_bedrock_full_access" {
+  role = var.ec2_role_name
+  policy_arn = aws_iam_policy.bedrock_full_access.arn
+}
+
+resource "aws_iam_role_policy_attachment" "attach_amazon_ec2_full_access" {
+  role       = var.ec2_role_name
+  policy_arn = "arn:aws:iam::aws:policy/AmazonEC2FullAccess"
+}
+
+resource "aws_iam_role_policy_attachment" "attach_amazon_sagemaker_full_access" {
+  role       = var.ec2_role_name
+  policy_arn = "arn:aws:iam::aws:policy/AmazonSageMakerFullAccess"
+}
+
