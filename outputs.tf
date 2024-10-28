@@ -58,3 +58,11 @@ output "s3_bucket" {
   description = "Name of the bucket"
   value       = aws_s3_bucket.bedrock_kb.id
 }
+
+################################################################################
+# EC2
+################################################################################
+
+output "ec2_instance_id" {
+  value = module.ec2_instance.ec2_instance_id
+}
