@@ -42,20 +42,10 @@ def get_secret():
     secret = get_secret_value_response['SecretString']
     return secret
 
-Council_and_Insurance_Agent_ID = os.getenv('Council_and_Insurance_Agent_ID')
-Council_and_Insurance_Agent_Alias_ID = os.getenv('Council_and_Insurance_Agent_Alias_ID')
-
-
-Council_and_Insurance_Agent_ID = os.getenv('Travel_Agent_ID')
-Council_and_Insurance_Agent_Alias_ID = os.getenv('Travel_Agent_Alias_ID')
-
 #Get Secrets
-# agent_details = eval(get_secret())
-# council_agent_details = (agent_details["Council_and_Insurance_Agent_ID"], agent_details["Council_and_Insurance_Agent_Alias_ID"])
-# travel_agent_details = (agent_details["Travel_Agent_ID"], agent_details["Travel_Agent_Alias_ID"])
-
-council_agent_details = (Council_and_Insurance_Agent_ID, Council_and_Insurance_Agent_Alias_ID)
-travel_agent_details = (Council_and_Insurance_Agent_ID, Council_and_Insurance_Agent_Alias_ID)
+agent_details = eval(get_secret())
+council_agent_details = (agent_details["Council_and_Insurance_Agent_ID"], agent_details["Council_and_Insurance_Agent_Alias_ID"])
+travel_agent_details = (agent_details["Travel_Agent_ID"], agent_details["Travel_Agent_Alias_ID"])
 
 
 # Initialize the orchestrator
