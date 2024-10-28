@@ -23,6 +23,7 @@ This repository contains the Terraform code for deploying the Bedrock Council Ap
 │   ├── agent_instructions.txt
 │   └── orchestration.txt
 ├── s3.tf
+├── ec2.tf
 ├── scripts
 │   └── manage_bedrock_agent.sh
 ├── variables.tf
