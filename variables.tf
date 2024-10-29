@@ -71,13 +71,13 @@ variable "agent_name" {
 variable "agent_description" {
   description = "The agent description."
   type        = string
-  default     = "e2e-council-agent"
+  default     = "e2e-rag-agent"
 }
 
 variable "agent_action_group" {
   description = "The action group name."
   type        = string
-  default     = "e2e-council-kb"
+  default     = "e2e-rag-kb"
 }
 
 variable "agent_action_group_description" {
