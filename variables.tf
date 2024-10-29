@@ -65,19 +65,19 @@ variable "agent_model_id" {
 variable "agent_name" {
   description = "The agent name."
   type        = string
-  default     = "e2e-rag-agent"
+  default     = "e2e-council-agent"
 }
 
 variable "agent_description" {
   description = "The agent description."
   type        = string
-  default     = "e2e-rag-agent"
+  default     = "e2e-council-agent"
 }
 
 variable "agent_action_group" {
   description = "The action group name."
   type        = string
-  default     = "e2e-rag-kb"
+  default     = "e2e-council-kb"
 }
 
 variable "agent_action_group_description" {
@@ -215,5 +215,5 @@ variable "ec2_role_name" {
 variable "key_name" {
   description = "The name of the key pair to use for the EC2 instance"
   type        = string
-  default = "bedrockkeytest"
+  default     = "bedrockkeytest"
 }
