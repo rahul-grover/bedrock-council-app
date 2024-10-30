@@ -212,8 +212,7 @@ variable "ec2_role_name" {
   default     = "ec2-bedrock-role-testing"
 }
 
-variable "key_name" {
-  description = "The name of the key pair to use for the EC2 instance"
-  type        = string
-  default     = "bedrockkeytest"
+variable "instance_name" {
+  description = "The name tag for the EC2 instance"
+  default     = "BedrockInstanceTesting"
 }
