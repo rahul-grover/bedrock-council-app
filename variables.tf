@@ -225,9 +225,21 @@ variable "invocation_logging" {
   type = object({
     enabled     = bool
     bucket_name = string
+    config = object({
+      embedding_data_delivery_enabled = bool
+      image_data_delivery_enabled     = bool
+      text_data_delivery_enabled      = bool
+      s3_key_prefix                   = string
+    })
   })
   default = {
-    enabled = true
-    bucket_name = "bedrock-invocation-logging"
+    enabled     = false
+    bucket_name = "bedrock-invocation-bucket"
+    config = {
+      embedding_data_delivery_enabled = true
+      image_data_delivery_enabled     = true
+      text_data_delivery_enabled      = true
+      s3_key_prefix                   = "bedrock"
+    }
   }
 }

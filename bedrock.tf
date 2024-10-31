@@ -17,12 +17,12 @@ resource "aws_bedrock_model_invocation_logging_configuration" "bedrock_logging" 
   ]
 
   logging_config {
-    embedding_data_delivery_enabled = true
-    image_data_delivery_enabled     = true
-    text_data_delivery_enabled      = true
+    embedding_data_delivery_enabled = var.invocation_logging.config.embedding_data_delivery_enabled
+    image_data_delivery_enabled     = var.invocation_logging.config.image_data_delivery_enabled
+    text_data_delivery_enabled      = var.invocation_logging.config.text_data_delivery_enabled
     s3_config {
       bucket_name = aws_s3_bucket.bedrock_logging["instance"].id
-      key_prefix  = "bedrock"
+      key_prefix  = var.invocation_logging.config.s3_key_prefix
     }
   }
 }
