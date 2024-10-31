@@ -19,7 +19,7 @@ resource "local_file" "private_key" {
 }
 
 resource "aws_security_group" "bedrock_sg" {
-  name        = "bedrock-sg"
+  name        = "terraform-bedrock-sg"
   description = "bedrock security group"
   vpc_id      = var.vpc_id
 
