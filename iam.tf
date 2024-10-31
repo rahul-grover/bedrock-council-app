@@ -294,3 +294,8 @@ resource "aws_iam_role_policy_attachment" "attach_amazon_secretmanager_readwrite
   role       = var.ec2_role_name
   policy_arn = "arn:aws:iam::aws:policy/SecretsManagerReadWrite"
 }
+
+resource "aws_iam_instance_profile" "ec2_instance_profile" {
+  name = "ec2_instance_profile"
+  role = var.ec2_role_name
+}
