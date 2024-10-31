@@ -217,3 +217,18 @@ variable "key_name" {
   type        = string
   default = "bedrockkeytest"
 }
+
+################################################################################
+# Bedrock Invocation Logging
+################################################################################
+variable "invocation_logging" {
+  description = "Configuration for the Bedrock invocation logging"
+  type = object({
+    enabled     = bool
+    bucket_name = string
+  })
+  default = {
+    enabled = true
+    bucket_name = "bedrock-invocation-logging"
+  }
+}

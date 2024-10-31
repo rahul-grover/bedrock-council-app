@@ -22,8 +22,9 @@ resource "aws_s3_bucket_public_access_block" "this" {
   restrict_public_buckets = true
 }
 
-resource aws_s3_bucket "bedrock_logging" {
-  bucket        = "${var.invocation_logging.enabled}-${random_uuid.uuid.result}"
+resource "aws_s3_bucket" "bedrock_logging" {
+  for_each      = var.invocation_logging.enabled
+  bucket        = "${var.invocation_logging.bucket_name}-${random_uuid.uuid.result}"
   force_destroy = true
   tags          = local.tags
   lifecycle {
@@ -34,8 +35,9 @@ resource aws_s3_bucket "bedrock_logging" {
 }
 
 resource "aws_s3_bucket_policy" "bedrock_logging" {
-  bucket = aws_s3_bucket.bedrock_logging.bucket
-  policy = <<EOF
+  for_each = var.invocation_logging.enabled
+  bucket   = aws_s3_bucket.invocation_logging["bucket_name"].bucket
+  policy   = <<EOF
 {
   "Version": "2012-10-17",
   "Statement": [
@@ -48,7 +50,7 @@ resource "aws_s3_bucket_policy" "bedrock_logging" {
         "s3:*"
       ],
       "Resource": [
-        "${aws_s3_bucket.bedrock_logging.arn}/*"
+        "${aws_s3_bucket.bedrock_logging["bucket"].arn}/*"
       ],
       "Condition": {
         "StringEquals": {
