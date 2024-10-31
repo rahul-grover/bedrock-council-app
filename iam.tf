@@ -167,7 +167,7 @@ resource "aws_iam_role_policy" "bedrock_agent_gr" {
     Version = "2012-10-17"
     Statement = [
       {
-        Action   = [
+        Action = [
           "bedrock:ApplyGuardrail",
           "bedrock:ListGuardrails",
           "bedrock:GetGuardrail"
@@ -184,7 +184,7 @@ resource "aws_iam_role_policy" "bedrock_agent_gr" {
 ################################################################################
 
 data "aws_iam_policy" "lambda_basic_execution" {
-  name = "AWSLambdaBasicExecutionRole"
+  arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
 }
 
 resource "aws_iam_role" "lambda" {
@@ -232,7 +232,7 @@ resource "aws_iam_role" "lambda_parser" {
 }
 
 ################################################################################
-# Bedrock Lambda IAM Role
+# EC2 Bedrock IAM Role
 ################################################################################
 
 resource "aws_iam_role" "ec2_role" {
@@ -253,31 +253,30 @@ resource "aws_iam_role" "ec2_role" {
 }
 
 ################################################################################
-# EC2 IAM Policy
+# EC2 Bedrock IAM Policy
 ################################################################################
 
 resource "aws_iam_policy" "bedrock_full_access" {
   name        = "AWSBedrockFullAccessRolePolicy"
   description = "Bedrock full access policy for EC2"
-  policy      = jsonencode({
+  policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
       {
-        "Effect": "Allow",
-        "Action": "bedrock:*",
-        "Resource": "*"
+        "Effect" : "Allow",
+        "Action" : "bedrock:*",
+        "Resource" : "*"
       }
     ]
   })
 }
 
 ################################################################################
-# EC2 IAM Policy Role Attachment
+# EC2 Bedrock IAM Role-Policy Attachment
 ################################################################################
 
-
 resource "aws_iam_role_policy_attachment" "attache_bedrock_full_access" {
-  role = var.ec2_role_name
+  role       = var.ec2_role_name
   policy_arn = aws_iam_policy.bedrock_full_access.arn
 }
 
@@ -291,3 +290,7 @@ resource "aws_iam_role_policy_attachment" "attach_amazon_sagemaker_full_access" 
   policy_arn = "arn:aws:iam::aws:policy/AmazonSageMakerFullAccess"
 }
 
+resource "aws_iam_role_policy_attachment" "attach_amazon_secretmanager_readwrite_access" {
+  role       = var.ec2_role_name
+  policy_arn = "arn:aws:iam::aws:policy/SecretsManagerReadWrite"
+}
