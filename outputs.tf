@@ -63,6 +63,10 @@ output "s3_bucket" {
 # EC2
 ################################################################################
 
-output "ec2_instance_id" {
-  value = module.ec2_instance.ec2_instance_id
+output "instance_id" {
+  value = aws_instance.bedrock_instance_test.id
+}
+
+output "instance_public_ip" {
+  value = aws_instance.bedrock_instance_test.public_ip
 }

@@ -65,7 +65,7 @@ variable "agent_model_id" {
 variable "agent_name" {
   description = "The agent name."
   type        = string
-  default     = "e2e-rag-agent"
+  default     = "e2e-council-agent"
 }
 
 variable "agent_description" {
@@ -209,11 +209,16 @@ variable "ami_id" {
 variable "ec2_role_name" {
   description = "The name of the IAM role for the EC2 instance"
   type        = string
-  default     = "ec2-bedrock-role-testing"
+  default     = "bedrock-role-for-ec2"
 }
 
-variable "key_name" {
-  description = "The name of the key pair to use for the EC2 instance"
-  type        = string
-  default = "bedrockkeytest"
+variable "instance_name" {
+  description = "The name tag for the EC2 instance"
+  default     = "TerraformBedrockInstance"
+}
+
+variable "allowed_ips" {
+  description = "List of IP addresses allowed to access the instance"
+  type        = list(string)
+  default     = ["220.245.130.110/32" , "103.224.52.140/32"]  # Replace with your IP addresses
 }
