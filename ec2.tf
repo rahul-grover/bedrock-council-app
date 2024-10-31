@@ -30,7 +30,7 @@ resource "aws_security_group" "bedrock_sg" {
       from_port   = 80
       to_port     = 80
       protocol    = "tcp"
-      cidr_blocks = [ingress_rules.value]
+      cidr_blocks = [ingress.value]
     }
   }
 
