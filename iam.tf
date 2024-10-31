@@ -294,3 +294,53 @@ resource "aws_iam_role_policy_attachment" "attach_amazon_secretmanager_readwrite
   role       = var.ec2_role_name
   policy_arn = "arn:aws:iam::aws:policy/SecretsManagerReadWrite"
 }
+
+################################################################################
+# Bedrock Invocation Logging
+################################################################################
+data "aws_iam_policy_document" "bedrock_cw_assume_role_policy" {
+  for_each = var.invocation_logging.enabled ? { instance = 1 } : {}
+  statement {
+    effect  = "Allow"
+    actions = ["sts:AssumeRole"]
+    principals {
+      type        = "Service"
+      identifiers = ["bedrock.amazonaws.com"]
+    }
+    condition {
+      test     = "StringEquals"
+      variable = "aws:SourceAccount"
+      values   = [data.aws_caller_identity.current.account_id]
+    }
+    condition {
+      test     = "ArnLike"
+      variable = "aws:SourceArn"
+      values   = ["arn:aws:bedrock:${local.region}:${local.account_id}:*"]
+    }
+  }
+}
+
+data "aws_iam_policy_document" "bedrock_cw_logging_policy_document" {
+  for_each = var.invocation_logging.enabled ? { instance = 1 } : {}
+  statement {
+    effect  = "Allow"
+    actions = [
+      "logs:CreateLogStream",
+      "logs:PutLogEvents",
+    ]
+    resources = ["arn:aws:logs:${local.region}:${local.account_id}:log-group:${var.invocation_logging.config.cloudwatch_config.log_group_name}:log-stream:aws/bedrock/modelinvocations"]
+  }
+}
+
+resource "aws_iam_role" "bedrock_cw_logging_role" {
+  for_each           = var.invocation_logging.enabled ? { instance = 1 } : {}
+  name               = "bedrock-cw-logging-role"
+  assume_role_policy = data.aws_iam_policy_document.bedrock_cw_assume_role_policy.json
+}
+
+resource "aws_iam_role_policy" "bedrock_cw_logging_policy" {
+  for_each = var.invocation_logging.enabled ? { instance = 1 } : {}
+  name     = "bedrock-cw-logging-policy"
+  role     = aws_iam_role.bedrock_cw_logging_role.name
+  policy   = data.aws_iam_policy_document.bedrock_cw_logging_policy_document.json
+}

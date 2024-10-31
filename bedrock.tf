@@ -20,9 +20,17 @@ resource "aws_bedrock_model_invocation_logging_configuration" "bedrock_logging" 
     embedding_data_delivery_enabled = var.invocation_logging.config.embedding_data_delivery_enabled
     image_data_delivery_enabled     = var.invocation_logging.config.image_data_delivery_enabled
     text_data_delivery_enabled      = var.invocation_logging.config.text_data_delivery_enabled
+    cloudwatch_config {
+      large_data_delivery_s3_config {
+        bucket_name = aws_s3_bucket.bedrock_logging["instance"].id
+        key_prefix  = var.invocation_logging.config.cloudwatch_config.large_data_delivery_s3_config.key_prefix
+      }
+      log_group_name = var.invocation_logging.config.cloudwatch_config.log_group_name
+      role_arn       = aws_iam_role.bedrock_cw_logging_role["instance"].arn
+    }
     s3_config {
       bucket_name = aws_s3_bucket.bedrock_logging["instance"].id
-      key_prefix  = var.invocation_logging.config.s3_key_prefix
+      key_prefix  = var.invocation_logging.config.s3_config.key_prefix
     }
   }
 }

@@ -54,10 +54,10 @@ resource "aws_s3_bucket_policy" "bedrock_logging" {
       ],
       "Condition": {
         "StringEquals": {
-          "aws:SourceAccount": "${data.aws_caller_identity.current.account_id}"
+          "aws:SourceAccount": "${local.account_id}"
         },
         "ArnLike": {
-          "aws:SourceArn": "arn:aws:bedrock:us-east-1:${data.aws_caller_identity.current.account_id}:*"
+          "aws:SourceArn": "arn:aws:bedrock:${local.region}:${local.account_id}:*"
         }
       }
     }

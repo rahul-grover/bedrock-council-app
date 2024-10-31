@@ -229,7 +229,15 @@ variable "invocation_logging" {
       embedding_data_delivery_enabled = bool
       image_data_delivery_enabled     = bool
       text_data_delivery_enabled      = bool
-      s3_key_prefix                   = string
+      cloudwatch_config = object({
+        large_data_delivery_s3_config = object({
+          key_prefix = string
+        })
+        log_group_name = string
+      })
+      s3_config = object({
+        key_prefix = string
+      })
     })
   })
   default = {
@@ -239,7 +247,15 @@ variable "invocation_logging" {
       embedding_data_delivery_enabled = true
       image_data_delivery_enabled     = true
       text_data_delivery_enabled      = true
-      s3_key_prefix                   = "bedrock"
+      cloudwatch_config = {
+        large_data_delivery_s3_config = {
+          key_prefix                   = "bedrock-cloudwatch"
+        }
+        log_group_name                 = "bedrock-cloudwatch"
+      }
+      s3_config ={
+        key_prefix                   = "bedrock"
+      }
     }
   }
 }
