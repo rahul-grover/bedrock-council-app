@@ -7,8 +7,24 @@ data "aws_bedrock_foundation_model" "kb" {
 }
 
 ################################################################################
-# Bedrock Model Invocation Logging
+# Bedrock Invocation Logging
 ################################################################################
+resource "aws_bedrock_model_invocation_logging_configuration" "bedrock_logging" {
+  for_each   = var.invocation_logging.enabled ? { instance = 1 } : {}
+  depends_on = [
+    aws_s3_bucket_policy.bedrock_logging
+  ]
+
+  logging_config {
+    embedding_data_delivery_enabled = true
+    image_data_delivery_enabled     = true
+    text_data_delivery_enabled      = true
+    s3_config {
+      bucket_name = aws_s3_bucket.bedrock_logging.id
+      key_prefix  = "bedrock"
+    }
+  }
+}
 
 ################################################################################
 # Bedrock Knowledge Base

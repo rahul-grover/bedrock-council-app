@@ -23,7 +23,7 @@ resource "aws_s3_bucket_public_access_block" "this" {
 }
 
 resource "aws_s3_bucket" "bedrock_logging" {
-  for_each      = var.invocation_logging.enabled ? { bucket = 1 } : {}
+  for_each      = var.invocation_logging.enabled ? { instance = 1 } : {}
   bucket        = "${var.invocation_logging.bucket_name}-${random_uuid.uuid.result}"
   force_destroy = true
   tags          = local.tags
@@ -35,8 +35,8 @@ resource "aws_s3_bucket" "bedrock_logging" {
 }
 
 resource "aws_s3_bucket_policy" "bedrock_logging" {
-  for_each = var.invocation_logging.enabled ? { bucket = 1 } : {}
-  bucket   = aws_s3_bucket.bedrock_logging["bucket"].bucket
+  for_each = var.invocation_logging.enabled ? { instance = 1 } : {}
+  bucket   = aws_s3_bucket.bedrock_logging.id
   policy   = <<EOF
 {
   "Version": "2012-10-17",
