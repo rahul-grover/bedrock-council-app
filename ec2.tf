@@ -47,7 +47,7 @@ resource "aws_security_group" "bedrock_sg" {
 }
 
 
-resource "aws_instance" "terraform_bedrock_instance" {
+resource "aws_instance" "tf_bedrock_instance" {
   ami             = var.ami_id
   instance_type   = "t2.micro"
   security_groups = [aws_security_group.bedrock_sg.name]
