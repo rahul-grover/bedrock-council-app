@@ -241,7 +241,7 @@ variable "invocation_logging" {
     })
   })
   default = {
-    enabled     = false
+    enabled     = true
     bucket_name = "bedrock-invocation-bucket"
     config = {
       embedding_data_delivery_enabled = true
