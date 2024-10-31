@@ -335,12 +335,12 @@ data "aws_iam_policy_document" "bedrock_cw_logging_policy_document" {
 resource "aws_iam_role" "bedrock_cw_logging_role" {
   for_each           = var.invocation_logging.enabled ? { instance = 1 } : {}
   name               = "bedrock-cw-logging-role"
-  assume_role_policy = data.aws_iam_policy_document.bedrock_cw_assume_role_policy.json
+  assume_role_policy = data.aws_iam_policy_document.bedrock_cw_assume_role_policy["instance"].json
 }
 
 resource "aws_iam_role_policy" "bedrock_cw_logging_policy" {
   for_each = var.invocation_logging.enabled ? { instance = 1 } : {}
   name     = "bedrock-cw-logging-policy"
-  role     = aws_iam_role.bedrock_cw_logging_role.name
-  policy   = data.aws_iam_policy_document.bedrock_cw_logging_policy_document.json
+  role     = aws_iam_role.bedrock_cw_logging_role["instance"].name
+  policy   = data.aws_iam_policy_document.bedrock_cw_logging_policy_document["instance"].json
 }
