@@ -50,7 +50,7 @@ resource "aws_s3_bucket_policy" "bedrock_logging" {
         "s3:*"
       ],
       "Resource": [
-        "${aws_s3_bucket.bedrock_logging["bucket"].arn}/*"
+        "${aws_s3_bucket.bedrock_logging["instance"].arn}/*"
       ],
       "Condition": {
         "StringEquals": {
