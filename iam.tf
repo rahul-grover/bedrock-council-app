@@ -275,7 +275,7 @@ resource "aws_iam_policy" "bedrock_full_access" {
 # EC2 Bedrock IAM Role-Policy Attachment
 ################################################################################
 
-resource "aws_iam_role_policy_attachment" "attache_bedrock_full_access" {
+resource "aws_iam_role_policy_attachment" "attach_bedrock_full_access" {
   role       = var.ec2_role_name
   policy_arn = aws_iam_policy.bedrock_full_access.arn
 }
