@@ -22,6 +22,48 @@ resource "aws_s3_bucket_public_access_block" "this" {
   restrict_public_buckets = true
 }
 
+resource aws_s3_bucket "bedrock_logging" {
+  bucket        = "${var.invocation_logging.enabled}-${random_uuid.uuid.result}"
+  force_destroy = true
+  tags          = local.tags
+  lifecycle {
+    ignore_changes = [
+      tags["CreatorId"], tags["CreatorName"],
+    ]
+  }
+}
+
+resource "aws_s3_bucket_policy" "bedrock_logging" {
+  bucket = aws_s3_bucket.bedrock_logging.bucket
+  policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Principal": {
+        "Service": "bedrock.amazonaws.com"
+      },
+      "Action": [
+        "s3:*"
+      ],
+      "Resource": [
+        "${aws_s3_bucket.bedrock_logging.arn}/*"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:SourceAccount": "${data.aws_caller_identity.current.account_id}"
+        },
+        "ArnLike": {
+          "aws:SourceArn": "arn:aws:bedrock:us-east-1:${data.aws_caller_identity.current.account_id}:*"
+        }
+      }
+    }
+  ]
+}
+EOF
+}
+
 ################################################################################
 # Encryption
 ################################################################################
