@@ -209,10 +209,16 @@ variable "ami_id" {
 variable "ec2_role_name" {
   description = "The name of the IAM role for the EC2 instance"
   type        = string
-  default     = "ec2-bedrock-role-testing"
+  default     = "bedrock-role-for-ec2"
 }
 
 variable "instance_name" {
   description = "The name tag for the EC2 instance"
-  default     = "BedrockInstanceTesting"
+  default     = "TerraformBedrockInstance"
+}
+
+variable "allowed_ips" {
+  description = "List of IP addresses allowed to access the instance"
+  type        = list(string)
+  default     = ["220.245.130.110/32" , "103.224.52.140/32"]  # Replace with your IP addresses
 }
