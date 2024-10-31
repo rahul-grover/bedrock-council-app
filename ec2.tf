@@ -32,7 +32,7 @@ resource "aws_instance" "tf_bedrock_instance" {
   instance_type   = "t2.micro"
   security_groups = [aws_security_group.bedrock_sg.name]
 
-  iam_instance_profile = aws_iam_instance_profile.ec2_instance_profile.name
+  iam_instance_profile = var.ec2_role_name
 
   tags = {
     Name       = var.instance_name
@@ -41,9 +41,4 @@ resource "aws_instance" "tf_bedrock_instance" {
   }
 
   user_data = file("userdata.sh")
-}
-
-resource "aws_iam_instance_profile" "ec2_instance_profile" {
-  name = "ec2_instance_profile"
-  role = var.ec2_role_name
 }
