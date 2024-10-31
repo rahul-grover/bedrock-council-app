@@ -230,3 +230,4 @@ variable "invocation_logging" {
     enabled = true
     bucket_name = "bedrock-invocation-logging"
   }
+}
