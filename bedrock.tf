@@ -12,8 +12,8 @@ data "aws_bedrock_foundation_model" "kb" {
 resource "aws_bedrock_model_invocation_logging_configuration" "bedrock_logging" {
   for_each   = var.invocation_logging.enabled ? { instance = 1 } : {}
   depends_on = [
-    aws_s3_bucketbedrock_logging,
-    aws_s3_bucket_policy.bedrock_logging
+    aws_s3_bucket.bedrock_logging["instance"],
+    aws_s3_bucket_policy.bedrock_logging["instance"]
   ]
 
   logging_config {
@@ -21,7 +21,7 @@ resource "aws_bedrock_model_invocation_logging_configuration" "bedrock_logging" 
     image_data_delivery_enabled     = true
     text_data_delivery_enabled      = true
     s3_config {
-      bucket_name = aws_s3_bucket.bedrock_logging.id
+      bucket_name = aws_s3_bucket.bedrock_logging["instance"].id
       key_prefix  = "bedrock"
     }
   }
