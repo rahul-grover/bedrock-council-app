@@ -1,23 +1,3 @@
-# Create a new SSH key pair
-resource "tls_private_key" "bedrock_ssh_key" {
-  algorithm = "RSA"
-  rsa_bits  = 4096
-}
-
-resource "aws_key_pair" "bedrock_generated_key" {
-  key_name   = "terraform-key"
-  public_key = tls_private_key.bedrock_ssh_key.public_key_openssh
-}
-
-# Save the private key to a local file
-resource "local_file" "private_key" {
-  content  = tls_private_key.bedrock_ssh_key.private_key_pem
-  filename = "bedrock-council-app/terraform-key.pem"
-
-  # Set file permissions to read-only
-  file_permission = "0400"
-}
-
 resource "aws_security_group" "bedrock_sg" {
   name        = "terraform-bedrock-sg"
   description = "bedrock security group"
