@@ -24,7 +24,7 @@ resource "aws_security_group" "bedrock_sg" {
   vpc_id      = var.vpc_id
 
   # Ingress rules to allow HTTP traffic from specified IPs
-  dynamic "ingress_rules" {
+  dynamic "ingress" {
     for_each = var.allowed_ips
     content {
       from_port   = 80
