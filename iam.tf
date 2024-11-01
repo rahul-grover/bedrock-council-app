@@ -257,7 +257,7 @@ resource "aws_iam_role" "ec2_role" {
 ################################################################################
 
 resource "aws_iam_policy" "bedrock_full_access" {
-  name        = "AWSBedrockFullAccessRolePolicy"
+  name        = "EC2BedrockFullAccessRolePolicy"
   description = "Bedrock full access policy for EC2"
   policy = jsonencode({
     Version = "2012-10-17"
