@@ -222,3 +222,46 @@ variable "allowed_ips" {
   type        = list(string)
   default     = ["220.245.130.110/32" , "103.224.52.140/32"]  # Replace with your IP addresses
 }
+
+################################################################################
+# Bedrock Invocation Logging
+################################################################################
+variable "invocation_logging" {
+  description = "Configuration for the Bedrock invocation logging"
+  type = object({
+    enabled     = bool
+    bucket_name = string
+    config = object({
+      embedding_data_delivery_enabled = bool
+      image_data_delivery_enabled     = bool
+      text_data_delivery_enabled      = bool
+      cloudwatch_config = object({
+        large_data_delivery_s3_config = object({
+          key_prefix = string
+        })
+        log_group_name = string
+      })
+      s3_config = object({
+        key_prefix = string
+      })
+    })
+  })
+  default = {
+    enabled     = true
+    bucket_name = "bedrock-invocation-bucket"
+    config = {
+      embedding_data_delivery_enabled = true
+      image_data_delivery_enabled     = true
+      text_data_delivery_enabled      = true
+      cloudwatch_config = {
+        large_data_delivery_s3_config = {
+          key_prefix                   = "bedrock-cloudwatch"
+        }
+        log_group_name                 = "bedrock-cloudwatch"
+      }
+      s3_config ={
+        key_prefix                   = "bedrock"
+      }
+    }
+  }
+}

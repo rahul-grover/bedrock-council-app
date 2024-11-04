@@ -53,9 +53,10 @@ resource "awscc_bedrock_agent" "agent_travel" {
 }
 
 resource "awscc_bedrock_agent_alias" "agent_travel" {
+  depends_on = [ awscc_bedrock_agent.agent_travel ]
+
   agent_alias_name = var.agent_name_travel
   description      = var.agent_name_travel
   agent_id         = awscc_bedrock_agent.agent_travel.id
-
-  tags = local.tags
+  tags             = local.tags
 }
