@@ -64,9 +64,9 @@ output "s3_bucket" {
 ################################################################################
 
 output "instance_id" {
-  value = aws_instance.bedrock_instance_test.id
+  value = aws_instance.tf_bedrock_instance.id
 }
 
 output "instance_public_ip" {
-  value = aws_instance.bedrock_instance_test.public_ip
+  value = aws_instance.tf_bedrock_instance.public_ip
 }
