@@ -172,11 +172,12 @@ resource "awscc_bedrock_agent" "this" {
 }
 
 resource "awscc_bedrock_agent_alias" "this" {
+  depends_on = [ awscc_bedrock_agent.this ]
+
   agent_alias_name = var.agent_name
   description      = var.agent_name
   agent_id         = awscc_bedrock_agent.this.id
-
-  tags = local.tags
+  tags             = local.tags
 }
 
 ################################################################################
