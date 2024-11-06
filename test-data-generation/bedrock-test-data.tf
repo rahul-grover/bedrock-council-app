@@ -19,6 +19,7 @@ resource "awscc_bedrock_agent" "agent_test_data" {
   auto_prepare                = true
 
   prompt_override_configuration = {
+    override_lambda = aws_lambda_function.parser.arn
     prompt_configurations = [
       {
         base_prompt_template = file("orchestration_test_data.json")
