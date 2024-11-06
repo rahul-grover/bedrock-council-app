@@ -18,6 +18,10 @@ locals {
   region     = data.aws_region.current.name
 }
 
+data "aws_bedrock_foundation_model" "agent_test_data" {
+  model_id = var.test_data_agent_model_id
+}
+
 data "aws_caller_identity" "current" {}
 data "aws_partition" "current" {}
 data "aws_region" "current" {}

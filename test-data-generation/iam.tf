@@ -39,7 +39,7 @@ resource "aws_iam_role_policy" "test_data_bedrock_agent_model" {
       {
         Action   = "bedrock:InvokeModel"
         Effect   = "Allow"
-        Resource = data.aws_bedrock_foundation_model.agent.model_arn
+        Resource = data.aws_bedrock_foundation_model.agent_test_data.model_arn
       }
     ]
   })
