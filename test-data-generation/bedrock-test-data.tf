@@ -23,7 +23,6 @@ resource "awscc_bedrock_agent" "agent_test_data" {
   auto_prepare                = true
 
   prompt_override_configuration = {
-    override_lambda = aws_lambda_function.parser.arn
     prompt_configurations = [
       {
         base_prompt_template = file("orchestration_test_data.json")
@@ -48,7 +47,7 @@ resource "awscc_bedrock_agent" "agent_test_data" {
 
   tags = local.tags
   depends_on = [
-    aws_iam_role_policy.bedrock_agent_model,
+    aws_iam_role_policy.test_data_bedrock_agent_model,
   ]
 }
 
