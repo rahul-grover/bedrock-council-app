@@ -10,7 +10,7 @@
 # https://github.com/hashicorp/terraform-provider-aws/issues/37168
 resource "awscc_bedrock_agent" "agent_test_data" {
   agent_name              = var.test_data_agent_name
-  agent_resource_role_arn = aws_iam_role.bedrock_agent.arn
+  agent_resource_role_arn = aws_iam_role.test_data_bedrock_agent.arn
   description             = var.test_data_agent_description
   foundation_model        = data.aws_bedrock_foundation_model.agent_test_data.model_id
   instruction             = file("agent_instructions_test_data.txt")
