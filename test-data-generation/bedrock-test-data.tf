@@ -51,6 +51,6 @@ resource "awscc_bedrock_agent_alias" "agent_alias_test_data" {
   agent_alias_name = var.test_data_agent_name
   description      = var.test_data_agent_description
   agent_id         = awscc_bedrock_agent.agent_test_data.id
-
+  depends_on = [ awscc_bedrock_agent.agent_test_data ]
   tags = local.tags
 }
