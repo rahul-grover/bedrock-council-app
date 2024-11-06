@@ -4,7 +4,7 @@ locals {
     "use1"  = "us-east-1"
     "euc1"  = "eu-central-1"
   }
-  settings = merge(yamldecode(file("application-bedrock-common.yml")), yamldecode(file("${var.TFC_WORKSPACE_NAME}.yml")))
+  settings = merge(yamldecode(file("test-data-bedrock-common.yml")), yamldecode(file("${var.TFC_WORKSPACE_NAME}.yml")))
 
   tags = {
     "region" : local.settings.region
