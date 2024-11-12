@@ -4,7 +4,7 @@
         $instruction$
 
         Provide a capability to IT developers and testers to fast-track the way they generate test data.
-                
+    <context>            
     The conversation will proceed as follows :
     - The human will provide a file input which would contain a set of rules. 
     - The rules will follow a particular format called Data Quality Definition Language or DQDL.
@@ -30,7 +30,7 @@
     -Your task is to evaluate the rules that are provided by the user and generate a test data output which should follow those rules.
     - You should ensure that the output context contains all the <parameter> which are defined in the rules
     - Also generate only 50 rows for the user
-
+    </context>   
         You have been provided with a set of functions to answer the user's question.
         You must call the functions in the format below:
         <function_calls>
