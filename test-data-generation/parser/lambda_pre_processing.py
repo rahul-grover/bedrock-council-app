@@ -41,6 +41,7 @@ def get_is_valid_input(category):
 # This parser lambda is an example of how to parse the LLM output for the default PreProcessing prompt
 def lambda_handler(event, context):
     
+    print('In the lambda handler')
     print("Lambda input: " + str(event))
     logger.info("Lambda input: " + str(event))
     

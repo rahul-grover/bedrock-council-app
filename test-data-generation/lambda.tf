@@ -14,7 +14,7 @@ resource "aws_lambda_function" "parser" {
   role             = aws_iam_role.lambda_parser.arn
   description      = "A Lambda function for parsing orchestration step response"
   filename         = data.archive_file.parser_zip.output_path
-  handler          = "lambda_function.lambda_handler"
+  handler          = "lambda_pre_processing.lambda_handler"
   runtime          = "python3.12"
   source_code_hash = data.archive_file.parser_zip.output_base64sha256
   depends_on       = [aws_iam_role.lambda]
