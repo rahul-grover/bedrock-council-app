@@ -2,8 +2,8 @@ import json
 import re
 import logging
 
-PRE_PROCESSING_RATIONALE_REGEX = "<thinking>(.*?)</thinking>"
-PREPROCESSING_CATEGORY_REGEX = "<category>(.*?)</category>"
+PRE_PROCESSING_RATIONALE_REGEX = "&lt;thinking&gt;(.*?)&lt;/thinking&gt;"
+PREPROCESSING_CATEGORY_REGEX = "&lt;category&gt;(.*?)&lt;/category&gt;"
 PREPROCESSING_PROMPT_TYPE = "PRE_PROCESSING"
 PRE_PROCESSING_RATIONALE_PATTERN = re.compile(PRE_PROCESSING_RATIONALE_REGEX, re.DOTALL)
 PREPROCESSING_CATEGORY_PATTERN = re.compile(PREPROCESSING_CATEGORY_REGEX, re.DOTALL)
@@ -11,6 +11,18 @@ PREPROCESSING_CATEGORY_PATTERN = re.compile(PREPROCESSING_CATEGORY_REGEX, re.DOT
 logger = logging.getLogger()
 
 # This parser lambda is an example of how to parse the LLM output for the default PreProcessing prompt
+def lambda_handler(event, context):
+    
+    print("Lambda input: " + str(event))
+    logger.info("Lambda input: " + str(event))
+    
+    prompt_type = event["promptType"]
+    
+    # Sanitize LLM response
+    model_response = sanitize_response(event['invokeModelRawResponse'])
+    
+    if event["promptType"] == PREPROCESSING_PROMPT_TYPE:
+        return parse_pre_processing(model_response)
 
 def parse_pre_processing(model_response):
     
@@ -37,18 +49,3 @@ def get_is_valid_input(category):
     if category is not None and category.strip().upper() == "D" or category.strip().upper() == "E":
         return True
     return False
-
-# This parser lambda is an example of how to parse the LLM output for the default PreProcessing prompt
-def lambda_handler(event, context):
-    
-    print('In the lambda handler')
-    print("Lambda input: " + str(event))
-    logger.info("Lambda input: " + str(event))
-    
-    prompt_type = event["promptType"]
-    
-    # Sanitize LLM response
-    model_response = sanitize_response(event['invokeModelRawResponse'])
-    
-    if event["promptType"] == PREPROCESSING_PROMPT_TYPE:
-        return parse_pre_processing(model_response)
