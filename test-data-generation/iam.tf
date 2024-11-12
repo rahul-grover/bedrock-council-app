@@ -79,7 +79,7 @@ data "aws_iam_policy" "lambda_basic_execution" {
 }
 
 resource "aws_iam_role" "lambda" {
-  name = "FunctionExecutionRoleForLambda_${var.agent_action_group}"
+  name = "FunctionExecutionRoleForLambda_test_data_generation"
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
