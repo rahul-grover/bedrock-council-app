@@ -49,7 +49,7 @@ resource "aws_iam_role_policy" "test_data_bedrock_agent_model" {
 # Bedrock Agent Lambda Parser role
 ################################################################################
 resource "aws_iam_role" "lambda_parser" {
-  name = "FunctionExecutionRoleForLambda_test_data_generation_lambda_parser"
+  name = "FunctionExecutionRoleForLambda_testdata_lambda_parser"
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
