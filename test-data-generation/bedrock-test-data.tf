@@ -34,7 +34,7 @@ resource "awscc_bedrock_agent" "agent_test_data" {
           top_k       = 250
           top_p       = 1
         }
-        parser_mode          = "DEFAULT"
+        parser_mode          = "OVERRIDDEN"
         prompt_creation_mode = "OVERRIDDEN"
         prompt_state         = "ENABLED"
         prompt_type          = "ORCHESTRATION"
