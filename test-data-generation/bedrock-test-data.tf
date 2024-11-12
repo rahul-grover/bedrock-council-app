@@ -22,7 +22,7 @@ resource "awscc_bedrock_agent" "agent_test_data" {
     override_lambda = aws_lambda_function.parser.arn
     prompt_configurations = [
       {
-        base_prompt_template = file("orchestration_test_data.json")
+        base_prompt_template = file("pre_processing.json")
         inference_configuration = {
           max_length = 2048
           stop_sequences = [
@@ -37,7 +37,7 @@ resource "awscc_bedrock_agent" "agent_test_data" {
         parser_mode          = "OVERRIDDEN"
         prompt_creation_mode = "OVERRIDDEN"
         prompt_state         = "ENABLED"
-        prompt_type          = "ORCHESTRATION"
+        prompt_type          = "PRE_PROCESSING"
       }
     ]
   }

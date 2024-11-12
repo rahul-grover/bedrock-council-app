@@ -4,7 +4,7 @@
 
 data "archive_file" "parser_zip" {
   type             = "zip"
-  source_file      = "parser/lambda_function.py"
+  source_file      = "parser/lambda_pre_processing.py"
   output_path      = "${path.module}/tmp/parser.zip"
   output_file_mode = "0666"
 }
