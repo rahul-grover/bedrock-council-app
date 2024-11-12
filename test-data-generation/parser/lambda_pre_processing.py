@@ -36,7 +36,7 @@ def parse_pre_processing(model_response):
         "promptType": "PRE_PROCESSING",
         "preProcessingParsedResponse": {
             "rationale": rationale,
-            "isValidInput": get_is_valid_input(category)
+            "isValidInput": True
             }
         }
 
