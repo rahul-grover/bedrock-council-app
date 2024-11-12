@@ -59,3 +59,11 @@ Rules = [
     StandardDeviation "id" between 6460.5 and 7140.55,
     ColumnValues "id" <= 23546
 ]
+
+
+Step 1: The human will provide a file as an input which would contain a set of rules. The rules will follow a particular format called Data Quality Definition Language or DQDL.
+Step 2: The rules defined in the file from Step 1, will detail constraints such as row count, column completeness, specific allowed values, column length and other attributes limitations for various fields.
+Step 3: You need to evalaute the above steps and help the user generate test data content based on the rules provided 
+Step 4: If the user doesn't provide any details about the number of rows to be generated, output at max 10 rows of data
+
+
