@@ -58,4 +58,6 @@ resource "awscc_bedrock_agent_alias" "agent_alias_test_data" {
 
 resource "random_string" "random" {
   length           = 6
+  special = true
+  override_special = "^([0-9a-zA-Z][_-]?){1,100}$"
 }
