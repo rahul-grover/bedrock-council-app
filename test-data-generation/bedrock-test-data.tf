@@ -15,7 +15,7 @@ resource "awscc_bedrock_agent" "agent_test_data" {
   foundation_model        = data.aws_bedrock_foundation_model.agent_test_data.model_id
   instruction             = file("agent_instructions_test_data.txt")
 
-  idle_session_ttl_in_seconds = 600
+  idle_session_ttl_in_seconds = 60
   auto_prepare                = true
 
   # prompt_override_configuration = {
