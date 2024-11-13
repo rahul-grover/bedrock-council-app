@@ -4,3 +4,26 @@ Step 1: The human will provide a file as an input which would contain a set of r
 Step 2: The rules defined in the file from Step 1, will detail constraints such as row count, column completeness, specific allowed values, column length and other attributes limitations for various fields.
 Step 3: You need to evalaute the above steps and help the user generate test data content based on the rules provided 
 Step 4: If the user doesn't provide any details about the number of rows to be generated, output at max 10 rows of data
+
+Example 1: 
+Input: 
+Rules = [
+    IsComplete "yearbuilt",
+    ColumnLength "yearbuilt" <= 9,
+    IsComplete "councilarea",
+    ColumnValues "councilarea" in ["","Moreland","Boroondara","Moonee Valley","Darebin","Glen Eira","Stonnington","Maribyrnong","Yarra","Port Phillip","Banyule","Bayside","Melbourne","Hobsons Bay","Brimbank","Monash"] with threshold >= 0.9,
+    ColumnLength "councilarea" <= 17,
+    IsComplete "lattitude",
+    ColumnLength "lattitude" <= 9,
+    IsComplete "longitude",
+    ColumnLength "longitude" <= 10,
+    IsComplete "regionname",
+    ColumnValues "regionname" in ["Southern Metropolitan","Northern Metropolitan","Western Metropolitan","Eastern Metropolitan"] with threshold >= 0.94,
+]
+Output: [{
+    "yearbuilt" : 2023,
+    "councilarea" : "Moreland",
+    "lattitude" : 33.8749,
+    "longitude" : 151.2155,
+    "regionname": "Southern Metropolitan"
+}]
