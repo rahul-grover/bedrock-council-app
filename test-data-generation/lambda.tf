@@ -46,7 +46,7 @@ resource "aws_lambda_function" "glue_processing_lambda"  {
   role             = aws_iam_role.lambda_parser.arn
   description      = "A Lambda function for processing a file event and running gluedq job on it"
   filename         = data.archive_file.glue_processing_zip.output_path
-  handler          = "glue_processing_lambda.lambda_handler"
+  handler          = "glue_dq.lambda_handler"
   runtime          = "python3.12"
   source_code_hash = data.archive_file.glue_processing_zip.output_base64sha256
   depends_on       = [aws_iam_role.lambda]
