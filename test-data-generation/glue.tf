@@ -25,7 +25,7 @@ resource "aws_glue_catalog_table" "data_table" {
 
     ser_de_info {
       name                  = "OpenCSVSerde"
-      serialization_library = "org.apache.hadoop.hive.serde2.OpenCSVSerde"
+      serialization_library = "org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe"
 
       parameters = {
         "field.delim" = ","
