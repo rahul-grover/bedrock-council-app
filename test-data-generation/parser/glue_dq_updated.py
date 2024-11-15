@@ -34,6 +34,8 @@ def create_dq_ruleset(database_name: str, table_name: str) -> str:
     Create a Data Quality ruleset based on recommendations
     """
     try:
+        print('inside create_dq_ruleset')
+        print(database_name, table_name)
         # Get rule recommendations
         response = glue_client.get_data_quality_rule_recommendation_run(
             DatabaseName=database_name,
@@ -74,6 +76,7 @@ def lambda_handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             raise ValueError("Missing source bucket or key in the event")
 
         logger.info(f"Processing file {source_key} from bucket {source_bucket}")
+        logger.info(f"Environment properties : db_name {database_name}, table_name {table_name}")
 
         # Create or get existing ruleset
         ruleset_id = create_dq_ruleset(database_name, table_name)
