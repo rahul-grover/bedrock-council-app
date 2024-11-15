@@ -31,3 +31,5 @@ __pycache__/*
 
 .terraform
 .terraform.*
+
+test-data-generation/test_*
