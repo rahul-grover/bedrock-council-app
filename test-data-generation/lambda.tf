@@ -36,7 +36,7 @@ resource "aws_lambda_permission" "parser" {
 
 data "archive_file" "glue_processing_zip" {
   type             = "zip"
-  source_file      = "parser/glue_dq.py"
+  source_file      = "parser/glue_dq_updated.py"
   output_path      = "${path.module}/tmp/glue_processing.zip"
   output_file_mode = "0666"
 }
@@ -46,7 +46,7 @@ resource "aws_lambda_function" "glue_processing_lambda"  {
   role             = aws_iam_role.s3_file_processor_role.arn
   description      = "A Lambda function for processing a file event and running gluedq job on it"
   filename         = data.archive_file.glue_processing_zip.output_path
-  handler          = "glue_dq.lambda_handler"
+  handler          = "glue_dq_updated.lambda_handler"
   runtime          = "python3.12"
   source_code_hash = data.archive_file.glue_processing_zip.output_base64sha256
   depends_on       = [aws_iam_role.s3_file_processor_role]
@@ -54,6 +54,9 @@ resource "aws_lambda_function" "glue_processing_lambda"  {
   environment {
     variables = {
       LOG_LEVEL = "INFO"
+      GLUE_DATABASE_NAME = aws_glue_catalog_database.data_catalog.name
+      GLUE_TABLE_NAME    = aws_glue_catalog_table.data_table.name
+      OUTPUT_S3_LOCATION = aws_s3_bucket.data_generation_bucket.id
     }
   }
 }
@@ -87,11 +90,23 @@ resource "aws_iam_role_policy" "lambda_policy" {
       {
         Effect = "Allow"
         Action = [
-          "s3:GetObject"
+          "s3:GetObject",
+          "s3:PutObject"
         ]
         Resource = [
-          "${aws_s3_bucket.data_generation_bucket.arn}/*"
+          "${aws_s3_bucket.data_bucket.arn}/*"
         ]
+      },
+      {
+        Effect = "Allow"
+        Action = [
+          "glue:GetDataQualityRuleRecommendationRun",
+          "glue:CreateDataQualityRuleset",
+          "glue:StartDataQualityTaskRun",
+          "glue:GetDataQualityTaskRun",
+          "glue:GetDataQualityResults"
+        ]
+        Resource = ["*"]
       },
       {
         Effect = "Allow"
