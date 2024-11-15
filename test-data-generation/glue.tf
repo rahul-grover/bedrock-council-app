@@ -81,14 +81,14 @@ resource "aws_glue_catalog_table" "data_table" {
     # Add more columns as needed
   }
 
-  # Optional: Add partitioning
-  partition_keys {
-    name = "id"
-    type = "string"
-  }
+#   # Optional: Add partitioning
+#   partition_keys {
+#     name = "id"
+#     type = "string"
+#   }
 
-  partition_keys {
-    name = "tid"
-    type = "string"
-  }
+#   partition_keys {
+#     name = "tid"
+#     type = "string"
+#   }
 }
