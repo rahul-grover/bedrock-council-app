@@ -193,6 +193,13 @@ resource "aws_iam_role_policy" "glue_policy" {
         ]
         Resource = ["arn:aws:s3:::aws-glue-ml-data-quality-assets-ap-southeast-2/*"]
       },
+      {
+        Effect = "Allow"
+        Action = [
+          "iam:PassRole",
+        ]
+        Resource = ["*"]
+      },
     ]
   })
 }
