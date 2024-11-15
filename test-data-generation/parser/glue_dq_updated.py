@@ -29,7 +29,7 @@ def wait_for_dq_task(task_run_id: str) -> Dict:
         
         time.sleep(10)  # Wait for 10 seconds before checking again
 
-def create_dq_ruleset(database_name: str, table_name: str) -> str:
+def create_dq_ruleset(database_name: str, table_name: str, role_arn: str) -> str:
     """
     Create a Data Quality ruleset based on recommendations
     """
@@ -37,19 +37,25 @@ def create_dq_ruleset(database_name: str, table_name: str) -> str:
         print('inside create_dq_ruleset')
         print(database_name, table_name)
         # Get rule recommendations
-        response = glue_client.get_data_quality_rule_recommendation_run(
-            DatabaseName=database_name,
-            TableName=table_name
+        response = glue_client.start_data_quality_rule_recommendation_run(
+            DataSource={
+                'GlueTable': {
+                    'DatabaseName': database_name,
+                    'TableName': table_name
+                }
+            },
+            Role=role_arn,
         )
         print('Get dQ rule done')
+        print('response:',response)
         # Create ruleset from recommendations
-        ruleset_response = glue_client.create_data_quality_ruleset(
-            Name=f"ruleset_{database_name}_{table_name}",
-            Description=f"Auto-generated ruleset for {database_name}.{table_name}",
-            Ruleset=response['Recommendations']
-        )
-        print('ruleset_response', ruleset_response)
-        return ruleset_response['RulesetId']
+        # ruleset_response = glue_client.create_data_quality_ruleset(
+        #     Name=f"ruleset_{database_name}_{table_name}",
+        #     Description=f"Auto-generated ruleset for {database_name}.{table_name}",
+        #     Ruleset=response['Recommendations']
+        # )
+        # print('ruleset_response', ruleset_response)
+        # return ruleset_response['RulesetId']
     
     except ClientError as e:
         logger.error(f"Error creating ruleset: {str(e)}")
@@ -66,6 +72,7 @@ def lambda_handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         database_name = os.environ['GLUE_DATABASE_NAME']
         table_name = os.environ['GLUE_TABLE_NAME']
         output_location = os.environ['OUTPUT_S3_LOCATION']
+        role_arn = os.environ['ROLE_ARN']
         
         # Extract S3 details from the event
         detail = event.get('detail', {})
@@ -79,7 +86,7 @@ def lambda_handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         logger.info(f"Environment properties : db_name {database_name}, table_name {table_name}")
 
         # Create or get existing ruleset
-        ruleset_id = create_dq_ruleset(database_name, table_name)
+        ruleset_id = create_dq_ruleset(database_name, table_name, role_arn)
         
         # Start the Data Quality task
         response = glue_client.start_data_quality_task_run(

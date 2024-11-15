@@ -57,6 +57,7 @@ resource "aws_lambda_function" "glue_processing_lambda"  {
       GLUE_DATABASE_NAME = aws_glue_catalog_database.data_catalog.name
       GLUE_TABLE_NAME    = aws_glue_catalog_table.data_table.name
       OUTPUT_S3_LOCATION = aws_s3_bucket.data_generation_bucket.id
+      ROLE_ARN = aws_iam_role.s3_file_processor_role.arn
     }
   }
 }
