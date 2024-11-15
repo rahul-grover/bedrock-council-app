@@ -169,11 +169,12 @@ resource "aws_iam_role_policy" "glue_policy" {
     Statement = [
       {
         Effect = "Allow"
-        Action = [
+        Action = [ #Get/Put/List is needed
           "s3:*"
         ]
         Resource = [
-          "${aws_s3_bucket.data_generation_bucket.arn}/*"
+          "${aws_s3_bucket.data_generation_bucket.arn}/*",
+          "${aws_s3_bucket.data_generation_bucket.arn}"
         ]
       },
       {
