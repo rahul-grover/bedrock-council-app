@@ -194,7 +194,7 @@ resource "aws_iam_role_policy" "glue_policy" {
       {
         Effect = "Allow"
         Action = [
-          "s3:GetObject",
+          "s3:*",
         ]
         Resource = ["arn:aws:s3:::aws-glue-ml-data-quality-assets-ap-southeast-2/*"]
       },
