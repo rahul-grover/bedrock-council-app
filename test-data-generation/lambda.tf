@@ -94,7 +94,7 @@ resource "aws_iam_role_policy" "lambda_policy" {
           "s3:PutObject"
         ]
         Resource = [
-          "${aws_s3_bucket.data_bucket.arn}/*"
+          "${aws_s3_bucket.data_generation_bucket.arn}/*"
         ]
       },
       {
