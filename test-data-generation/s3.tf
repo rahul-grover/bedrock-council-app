@@ -8,10 +8,7 @@ resource "aws_s3_bucket" "data_generation_bucket" {
   # Recommended to prevent accidental deletion of bucket
   force_destroy = false
 
-  tags = {
-    Environment = "production"
-    Purpose     = "data-storage"
-  }
+  tags = local.tags
 }
 
 # Enable versioning
