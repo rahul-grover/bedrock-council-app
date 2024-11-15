@@ -35,12 +35,12 @@ resource "aws_glue_catalog_table" "data_table" {
     # Define your columns here
     columns {
       name = "id"
-      type = "string"
+      type = "bigint"
     }
 
     columns {
       name = "tid"
-      type = "string"
+      type = "bigint"
     }
 
     columns {
@@ -75,7 +75,7 @@ resource "aws_glue_catalog_table" "data_table" {
 
     columns {
       name = "zipcode"
-      type = "string"
+      type = "bigint"
     }
     # Add more columns as needed
   }
