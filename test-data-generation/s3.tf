@@ -43,9 +43,6 @@ resource "aws_s3_bucket_public_access_block" "dg_bucket_blockaccess" {
   restrict_public_buckets = true
 }
 
-# Get current AWS account ID
-data "aws_caller_identity" "current" {}
-
 # Optional: Add bucket policy
 resource "aws_s3_bucket_policy" "main" {
   bucket = aws_s3_bucket.main.id
