@@ -170,8 +170,7 @@ resource "aws_iam_role_policy" "glue_policy" {
       {
         Effect = "Allow"
         Action = [
-          "s3:GetObject",
-          "s3:PutObject"
+          "s3:*"
         ]
         Resource = [
           "${aws_s3_bucket.data_generation_bucket.arn}/*"
