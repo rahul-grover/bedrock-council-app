@@ -41,14 +41,14 @@ def create_dq_ruleset(database_name: str, table_name: str) -> str:
             DatabaseName=database_name,
             TableName=table_name
         )
-        
+        print('Get dQ rule done')
         # Create ruleset from recommendations
         ruleset_response = glue_client.create_data_quality_ruleset(
             Name=f"ruleset_{database_name}_{table_name}",
             Description=f"Auto-generated ruleset for {database_name}.{table_name}",
             Ruleset=response['Recommendations']
         )
-        
+        print('ruleset_response', ruleset_response)
         return ruleset_response['RulesetId']
     
     except ClientError as e:

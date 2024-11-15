@@ -40,7 +40,7 @@ resource "aws_glue_catalog_table" "data_table" {
     }
 
     columns {
-      name = "TID"
+      name = "tid"
       type = "string"
     }
 
