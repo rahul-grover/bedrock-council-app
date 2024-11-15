@@ -24,8 +24,8 @@ resource "aws_glue_catalog_table" "data_table" {
     output_format = "org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat"
 
     ser_de_info {
-      name                  = "JsonSerDe"
-      serialization_library = "org.openx.data.jsonserde.JsonSerDe"
+      name                  = "OpenCSVSerde"
+      serialization_library = "org.apache.hadoop.hive.serde2.OpenCSVSerde"
 
       parameters = {
         "serialization.format" = "1"
