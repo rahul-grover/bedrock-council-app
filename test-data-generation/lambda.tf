@@ -180,9 +180,7 @@ resource "aws_iam_role_policy" "glue_policy" {
       {
         Effect = "Allow"
         Action = [
-          "logs:CreateLogGroup",
-          "logs:CreateLogStream",
-          "logs:PutLogEvents"
+          "logs:*",
         ]
         Resource = ["arn:aws:logs:*:*:*"]
       },
