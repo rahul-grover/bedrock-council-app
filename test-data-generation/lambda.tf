@@ -57,7 +57,7 @@ resource "aws_lambda_function" "glue_processing_lambda"  {
       GLUE_DATABASE_NAME = aws_glue_catalog_database.data_catalog.name
       GLUE_TABLE_NAME    = aws_glue_catalog_table.data_table.name
       OUTPUT_S3_LOCATION = aws_s3_bucket.data_generation_bucket.id
-      ROLE_ARN = aws_iam_role.s3_file_processor_role.arn
+      ROLE_ARN = aws_iam_role.glue_data_quality_role.arn
     }
   }
 }
@@ -126,6 +126,68 @@ resource "aws_iam_role_policy" "lambda_policy" {
         ]
         Resource = ["*"]
       },
+    ]
+  })
+}
+
+# IAM Role for Glue Data Quality
+resource "aws_iam_role" "glue_data_quality_role" {
+  name = "glue-data-quality-role"
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action = "sts:AssumeRole"
+        Effect = "Allow"
+        Principal = {
+          Service = "glue.amazonaws.com"
+        }
+      }
+    ]
+  })
+
+  tags = {
+    Purpose = "GlueDataQuality"
+  }
+}
+
+
+# IAM policy for the Lambda role
+resource "aws_iam_role_policy" "glue_policy" {
+  name = "glue-policy"
+  role = aws_iam_role.glue_data_quality_role.id
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Action = [
+          "s3:GetObject",
+          "s3:PutObject"
+        ]
+        Resource = [
+          "${aws_s3_bucket.data_generation_bucket.arn}/*"
+        ]
+      },
+      {
+        Effect = "Allow"
+        Action = [
+          "glue:*"
+        ]
+        Resource = ["*"]
+      },
+      {
+        Effect = "Allow"
+        Action = [
+          "logs:CreateLogGroup",
+          "logs:CreateLogStream",
+          "logs:PutLogEvents"
+        ]
+        Resource = ["arn:aws:logs:*:*:*"]
+      },
+     
     ]
   })
 }
