@@ -45,7 +45,7 @@ resource "aws_s3_bucket_public_access_block" "dg_bucket_blockaccess" {
 
 # Optional: Add bucket policy
 resource "aws_s3_bucket_policy" "main" {
-  bucket = aws_s3_bucket.main.id
+  bucket = aws_s3_bucket.data_generation_bucket.id
 
   policy = jsonencode({
     Version = "2012-10-17"
