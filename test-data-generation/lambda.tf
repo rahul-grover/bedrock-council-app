@@ -49,7 +49,7 @@ resource "aws_lambda_function" "glue_processing_lambda"  {
   handler          = "glue_dq.lambda_handler"
   runtime          = "python3.12"
   source_code_hash = data.archive_file.glue_processing_zip.output_base64sha256
-  depends_on       = [aws_iam_role.lambda]
+  depends_on       = [aws_iam_role.s3_file_processor_role]
   tags             = local.tags
   environment {
     variables = {
