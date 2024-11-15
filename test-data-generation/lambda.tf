@@ -104,9 +104,7 @@ resource "aws_iam_role_policy" "lambda_policy" {
           "glue:GetDataQualityRuleRecommendationRun",
           "glue:StartDataQualityRuleRecommendationRun",
           "glue:CreateDataQualityRuleset",
-          "glue:StartDataQualityTaskRun",
-          "glue:GetDataQualityTaskRun",
-          "glue:GetDataQualityResults"
+          "glue:GetTable"
         ]
         Resource = ["*"]
       },
