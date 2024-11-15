@@ -8,18 +8,18 @@ resource "aws_glue_catalog_database" "data_catalog" {
 resource "aws_glue_catalog_table" "data_table" {
   name          = "real_estate_data"
   database_name = aws_glue_catalog_database.data_catalog.name
-  
+
   table_type = "EXTERNAL_TABLE"
-  
+
   parameters = {
-    EXTERNAL              = "TRUE"
-    "classification"      = "json"  # Change to csv, parquet etc. based on your data format
-    "connectionName"      = ""
-    "typeOfData"         = "file"
+    EXTERNAL         = "TRUE"
+    "classification" = "json" # Change to csv, parquet etc. based on your data format
+    "connectionName" = ""
+    "typeOfData"     = "file"
   }
 
   storage_descriptor {
-    location      = "s3://${aws_s3_bucket.data_generation_bucket.id}/data/"  # Your S3 path
+    location      = "s3://${aws_s3_bucket.data_generation_bucket.id}/data/" # Your S3 path
     input_format  = "org.apache.hadoop.mapred.TextInputFormat"
     output_format = "org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat"
 
@@ -29,10 +29,10 @@ resource "aws_glue_catalog_table" "data_table" {
 
       parameters = {
         "serialization.format" = "1"
-        "case.insensitive"    = "true"
+        "case.insensitive"     = "true"
       }
     }
-    
+
     # Define your columns here
     columns {
       name = "id"
@@ -57,13 +57,13 @@ resource "aws_glue_catalog_table" "data_table" {
     columns {
       name = "price"
       type = "string"
-    }    
-    
+    }
+
     columns {
       name = "address"
       type = "string"
-    }    
-    
+    }
+
     columns {
       name = "city"
       type = "string"

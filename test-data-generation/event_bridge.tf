@@ -1,6 +1,6 @@
 # Enable EventBridge notifications for the S3 bucket
 resource "aws_s3_bucket_notification" "bucket_notification" {
-  bucket = aws_s3_bucket.data_generation_bucket.id
+  bucket      = aws_s3_bucket.data_generation_bucket.id
   eventbridge = true
 }
 

@@ -41,7 +41,7 @@ data "archive_file" "glue_processing_zip" {
   output_file_mode = "0666"
 }
 
-resource "aws_lambda_function" "glue_processing_lambda"  {
+resource "aws_lambda_function" "glue_processing_lambda" {
   function_name    = "${var.test_data_agent_name}-glue-dq-processor"
   role             = aws_iam_role.s3_file_processor_role.arn
   description      = "A Lambda function for processing a file event and running gluedq job on it"
@@ -51,13 +51,14 @@ resource "aws_lambda_function" "glue_processing_lambda"  {
   source_code_hash = data.archive_file.glue_processing_zip.output_base64sha256
   depends_on       = [aws_iam_role.s3_file_processor_role]
   tags             = local.tags
+  timeout          = 120
   environment {
     variables = {
-      LOG_LEVEL = "INFO"
+      LOG_LEVEL          = "INFO"
       GLUE_DATABASE_NAME = aws_glue_catalog_database.data_catalog.name
       GLUE_TABLE_NAME    = aws_glue_catalog_table.data_table.name
       OUTPUT_S3_LOCATION = aws_s3_bucket.data_generation_bucket.id
-      ROLE_ARN = aws_iam_role.glue_data_quality_role.arn
+      ROLE_ARN           = aws_iam_role.glue_data_quality_role.arn
     }
   }
 }
@@ -185,7 +186,13 @@ resource "aws_iam_role_policy" "glue_policy" {
         ]
         Resource = ["arn:aws:logs:*:*:*"]
       },
-     
+      {
+        Effect = "Allow"
+        Action = [
+          "s3:GetObject",
+        ]
+        Resource = ["arn:aws:s3:::aws-glue-ml-data-quality-assets-ap-southeast-2/*"]
+      },
     ]
   })
 }

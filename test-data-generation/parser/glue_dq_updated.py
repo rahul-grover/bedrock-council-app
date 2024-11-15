@@ -103,13 +103,13 @@ def lambda_handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             results = glue_client.get_data_quality_results(
                 TaskRunId=task_run_id
             )
-            
+            recommended_rule_set = response['RecommendedRuleset']
             # Store results in S3
-            result_key = f"{output_location}/output/dq_results_{task_run_id}.json"
+            result_key = f"{output_location}/output/dq_results_{task_run_id}.txt"
             s3_client.put_object(
                 Bucket=source_bucket,
                 Key=result_key,
-                Body=json.dumps(results, indent=2)
+                Body=recommended_rule_set
             )
             
             return {
