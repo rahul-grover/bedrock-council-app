@@ -14,22 +14,22 @@ logger.setLevel(logging.INFO)
 glue_client = boto3.client('glue')
 s3_client = boto3.client('s3')
 
-def wait_for_dq_task(task_run_id: str) -> Dict:
+def wait_for_dq_task(run_id: str) -> Dict:
     """
     Wait for the Data Quality task to complete and return the results
     """
     while True:
-        response = glue_client.get_data_quality_task_run(
-            taskRunId=task_run_id
+        response = glue_client.get_data_quality_rule_recommendation_run(
+            RunId=run_id
         )
-        
+        print('response from recommendation run:', response)
         status = response['Status']
         if status in ['SUCCEEDED', 'FAILED', 'TIMEOUT', 'ERROR']:
             return response
         
         time.sleep(10)  # Wait for 10 seconds before checking again
 
-def create_dq_ruleset(database_name: str, table_name: str, role_arn: str) -> str:
+def create_dq_recommendation_run(database_name: str, table_name: str, role_arn: str) -> str:
     """
     Create a Data Quality ruleset based on recommendations
     """
@@ -48,15 +48,8 @@ def create_dq_ruleset(database_name: str, table_name: str, role_arn: str) -> str
         )
         print('Get dQ rule done')
         print('response:',response)
-        # Create ruleset from recommendations
-        # ruleset_response = glue_client.create_data_quality_ruleset(
-        #     Name=f"ruleset_{database_name}_{table_name}",
-        #     Description=f"Auto-generated ruleset for {database_name}.{table_name}",
-        #     Ruleset=response['Recommendations']
-        # )
-        # print('ruleset_response', ruleset_response)
-        # return ruleset_response['RulesetId']
-    
+        return response['RunId']
+        
     except ClientError as e:
         logger.error(f"Error creating ruleset: {str(e)}")
         raise
@@ -86,24 +79,24 @@ def lambda_handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         logger.info(f"Environment properties : db_name {database_name}, table_name {table_name}")
 
         # Create or get existing ruleset
-        ruleset_id = create_dq_ruleset(database_name, table_name, role_arn)
+        run_id = create_dq_recommendation_run(database_name, table_name, role_arn)
         
-        # Start the Data Quality task
-        response = glue_client.start_data_quality_task_run(
-            DatabaseName=database_name,
-            TableName=table_name,
-            RulesetId=ruleset_id,
-            AdditionalRunOptions={
-                'CloudWatchMetricsEnabled': True,
-                'ResultsS3Prefix': output_location
-            }
-        )
+        # # Start the Data Quality task
+        # response = glue_client.start_data_quality_task_run(
+        #     DatabaseName=database_name,
+        #     TableName=table_name,
+        #     RulesetId=ruleset_id,
+        #     AdditionalRunOptions={
+        #         'CloudWatchMetricsEnabled': True,
+        #         'ResultsS3Prefix': output_location
+        #     }
+        # )
         
-        task_run_id = response['TaskRunId']
-        logger.info(f"Started Data Quality task with ID: {task_run_id}")
+        # task_run_id = response['TaskRunId']
+        logger.info(f"Started Data Quality recommendation run with ID: {run_id}")
         
         # Wait for the task to complete
-        result = wait_for_dq_task(task_run_id)
+        result = wait_for_dq_task(run_id)
         
         if result['Status'] == 'SUCCEEDED':
             # Get the results
