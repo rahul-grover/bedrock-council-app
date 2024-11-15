@@ -43,7 +43,7 @@ data "archive_file" "glue_processing_zip" {
 
 resource "aws_lambda_function" "glue_processing_lambda"  {
   function_name    = "${var.test_data_agent_name}-glue-dq-processor"
-  role             = aws_iam_role.lambda_parser.arn
+  role             = aws_iam_role.s3_file_processor_role.arn
   description      = "A Lambda function for processing a file event and running gluedq job on it"
   filename         = data.archive_file.glue_processing_zip.output_path
   handler          = "glue_dq.lambda_handler"
