@@ -39,22 +39,7 @@ resource "aws_glue_catalog_table" "data_table" {
     }
 
     columns {
-      name = "tid"
-      type = "bigint"
-    }
-
-    columns {
-      name = "category_name"
-      type = "string"
-    }
-
-    columns {
-      name = "property_type"
-      type = "string"
-    }
-
-    columns {
-      name = "price"
+      name = "suburb"
       type = "string"
     }
 
@@ -64,19 +49,20 @@ resource "aws_glue_catalog_table" "data_table" {
     }
 
     columns {
-      name = "city"
+      name = "rooms"
+      type = "int"
+    }
+
+    columns {
+      name = "type"
       type = "string"
     }
 
     columns {
-      name = "state"
-      type = "string"
+      name = "price"
+      type = "float"
     }
 
-    columns {
-      name = "zipcode"
-      type = "bigint"
-    }
     # Add more columns as needed
   }
 

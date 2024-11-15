@@ -66,3 +66,93 @@ resource "aws_s3_bucket_policy" "main" {
   })
 }
 
+[
+  {
+    "Name": "col0",
+    "Type": "bigint"
+  },
+  {
+    "Name": "col1",
+    "Type": "string"
+  },
+  {
+    "Name": "col2",
+    "Type": "string"
+  },
+  {
+    "Name": "col3",
+    "Type": "string"
+  },
+  {
+    "Name": "col4",
+    "Type": "string"
+  },
+  {
+    "Name": "col5",
+    "Type": "string"
+  },
+  {
+    "Name": "col6",
+    "Type": "string"
+  },
+  {
+    "Name": "col7",
+    "Type": "string"
+  },
+  {
+    "Name": "col8",
+    "Type": "string"
+  },
+  {
+    "Name": "col9",
+    "Type": "string"
+  },
+  {
+    "Name": "col10",
+    "Type": "string"
+  },
+  {
+    "Name": "col11",
+    "Type": "string"
+  },
+  {
+    "Name": "col12",
+    "Type": "string"
+  },
+  {
+    "Name": "col13",
+    "Type": "string"
+  },
+  {
+    "Name": "col14",
+    "Type": "string"
+  },
+  {
+    "Name": "col15",
+    "Type": "string"
+  },
+  {
+    "Name": "col16",
+    "Type": "string"
+  },
+  {
+    "Name": "col17",
+    "Type": "string"
+  },
+  {
+    "Name": "col18",
+    "Type": "string"
+  },
+  {
+    "Name": "col19",
+    "Type": "string"
+  },
+  {
+    "Name": "col20",
+    "Type": "string"
+  },
+  {
+    "Name": "col21",
+    "Type": "string"
+  }
+]
