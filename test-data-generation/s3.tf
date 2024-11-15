@@ -6,18 +6,18 @@ resource "aws_s3_bucket" "data_generation_bucket" {
   bucket = "data-generation-bucket-${data.aws_caller_identity.current.account_id}"
 
   # Recommended to prevent accidental deletion of bucket
-  force_destroy = false
+#   force_destroy = false
 
   tags = local.tags
 }
 
 # Enable versioning
-resource "aws_s3_bucket_versioning" "dg_bucket_version" {
-  bucket = aws_s3_bucket.data_generation_bucket.id
-  versioning_configuration {
-    status = "Enabled"
-  }
-}
+# resource "aws_s3_bucket_versioning" "dg_bucket_version" {
+#   bucket = aws_s3_bucket.data_generation_bucket.id
+#   versioning_configuration {
+#     status = "Enabled"
+#   }
+# }
 
 # Enable server-side encryption by default
 resource "aws_s3_bucket_server_side_encryption_configuration" "dg_bucket_encryption" {
