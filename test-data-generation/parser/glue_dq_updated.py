@@ -101,7 +101,7 @@ def lambda_handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             )
             
             # Store results in S3
-            result_key = f"{output_location}/runs_output/dq_results_{task_run_id}.json"
+            result_key = f"{output_location}/output/dq_results_{task_run_id}.json"
             s3_client.put_object(
                 Bucket=source_bucket,
                 Key=result_key,
