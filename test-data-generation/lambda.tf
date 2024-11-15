@@ -102,6 +102,7 @@ resource "aws_iam_role_policy" "lambda_policy" {
         Effect = "Allow"
         Action = [
           "glue:GetDataQualityRuleRecommendationRun",
+          "glue:StartDataQualityRuleRecommendationRun",
           "glue:CreateDataQualityRuleset",
           "glue:StartDataQualityTaskRun",
           "glue:GetDataQualityTaskRun",
