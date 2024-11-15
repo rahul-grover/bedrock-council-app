@@ -220,5 +220,5 @@ variable "instance_name" {
 variable "allowed_ips" {
   description = "List of IP addresses allowed to access the instance"
   type        = list(string)
-  default     = ["220.245.130.110/32" , "103.224.52.140/32"]  # Replace with your IP addresses
+  default     = ["220.245.130.110/32", "103.224.52.140/32"] # Replace with your IP addresses
 }

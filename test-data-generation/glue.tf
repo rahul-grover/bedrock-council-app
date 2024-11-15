@@ -13,7 +13,7 @@ resource "aws_glue_catalog_table" "data_table" {
 
   parameters = {
     EXTERNAL         = "TRUE"
-    "classification" = "json" # Change to csv, parquet etc. based on your data format
+    "classification" = "csv" # Change to csv, parquet etc. based on your data format
     "connectionName" = ""
     "typeOfData"     = "file"
   }

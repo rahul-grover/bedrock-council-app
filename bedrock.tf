@@ -136,7 +136,7 @@ resource "awscc_bedrock_agent" "this" {
 
   guardrail_configuration = {
     guardrail_identifier = aws_bedrock_guardrail.this.guardrail_id
-    guardrail_version = aws_bedrock_guardrail.this.version
+    guardrail_version    = aws_bedrock_guardrail.this.version
   }
 
   tags = local.tags
