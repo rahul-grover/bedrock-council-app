@@ -142,7 +142,14 @@ resource "aws_iam_role" "glue_data_quality_role" {
         Principal = {
           Service = "glue.amazonaws.com"
         }
-      }
+      },
+      {
+            "Effect": "Allow",
+            "Principal": {
+                "Service": "scheduler.amazonaws.com"
+            },
+            "Action": "sts:AssumeRole"
+        }
     ]
   })
 
