@@ -28,8 +28,7 @@ resource "aws_glue_catalog_table" "data_table" {
       serialization_library = "org.apache.hadoop.hive.serde2.OpenCSVSerde"
 
       parameters = {
-        "serialization.format" = "1"
-        "case.insensitive"     = "true"
+        "field.delim" = ","
       }
     }
 
