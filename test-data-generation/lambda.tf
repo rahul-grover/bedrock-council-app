@@ -118,7 +118,14 @@ resource "aws_iam_role_policy" "lambda_policy" {
           "logs:PutLogEvents"
         ]
         Resource = ["arn:aws:logs:*:*:*"]
-      }
+      },
+      {
+        Effect = "Allow"
+        Action = [
+          "iam:PassRole"
+        ]
+        Resource = ["*"]
+      },
     ]
   })
 }
