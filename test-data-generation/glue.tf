@@ -50,7 +50,7 @@ resource "aws_glue_catalog_table" "data_table" {
 
     columns {
       name = "rooms"
-      type = "int"
+      type = "bigint"
     }
 
     columns {
@@ -60,7 +60,7 @@ resource "aws_glue_catalog_table" "data_table" {
 
     columns {
       name = "price"
-      type = "float"
+      type = "bigint"
     }
 
     # Add more columns as needed
