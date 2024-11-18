@@ -106,7 +106,7 @@ def lambda_handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             print('respone of the RecommendedRuleset', result['RecommendedRuleset'])
             recommended_rule_set = result['RecommendedRuleset']
             # Store results in S3
-            result_key = f"{output_location}/output/dq_results_{task_run_id}.txt"
+            result_key = f"{output_location}/output/{table_name}/dq_results_{run_id}.txt"
             s3_client.put_object(
                 Bucket=source_bucket,
                 Key=result_key,
@@ -117,7 +117,7 @@ def lambda_handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 'statusCode': 200,
                 'body': json.dumps({
                     'message': 'Data Quality check completed successfully',
-                    'taskRunId': task_run_id,
+                    'run_id': run_id,
                     'resultsLocation': f"s3://{source_bucket}/{result_key}"
                 })
             }
