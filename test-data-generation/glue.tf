@@ -9,8 +9,6 @@ resource "aws_glue_catalog_table" "data_table" {
   name          = "real_estate_data"
   database_name = aws_glue_catalog_database.data_catalog.name
 
-  table_type = "EXTERNAL_TABLE"
-
   parameters = {
     "classification" = "csv" # Change to csv, parquet etc. based on your data format
   }
