@@ -81,34 +81,20 @@ def lambda_handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         # Create or get existing ruleset
         run_id = create_dq_recommendation_run(database_name, table_name, role_arn)
         
-        # # Start the Data Quality task
-        # response = glue_client.start_data_quality_task_run(
-        #     DatabaseName=database_name,
-        #     TableName=table_name,
-        #     RulesetId=ruleset_id,
-        #     AdditionalRunOptions={
-        #         'CloudWatchMetricsEnabled': True,
-        #         'ResultsS3Prefix': output_location
-        #     }
-        # )
-        
-        # task_run_id = response['TaskRunId']
+       # task_run_id = response['TaskRunId']
         logger.info(f"Started Data Quality recommendation run with ID: {run_id}")
         
         # Wait for the task to complete
         result = wait_for_dq_task(run_id)
         
         if result['Status'] == 'SUCCEEDED':
-            # Get the results
-            #results = glue_client.get_data_quality_result(
-            #    TaskRunId=task_run_id
-            #)
+            # Print the recommended ruleset returned
             print('respone of the RecommendedRuleset', result['RecommendedRuleset'])
             recommended_rule_set = result['RecommendedRuleset']
             # Store results in S3
             result_key = f"{output_location}/output/{table_name}/dq_results_{run_id}.txt"
             s3_client.put_object(
-                Bucket=source_bucket,
+                Bucket="{source_bucket}/output",
                 Key=result_key,
                 Body=recommended_rule_set
             )
