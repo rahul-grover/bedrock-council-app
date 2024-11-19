@@ -46,7 +46,6 @@ def create_dq_recommendation_run(database_name: str, table_name: str, role_arn: 
             },
             Role=role_arn,
         )
-        print('Get dQ rule done')
         print('response:',response)
         return response['RunId']
         

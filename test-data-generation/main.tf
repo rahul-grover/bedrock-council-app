@@ -13,6 +13,8 @@ locals {
     "Owner" : "rahul.grover@slalom.com"
   }
 
+  input_prefix = "data"
+
   account_id = data.aws_caller_identity.current.account_id
   partition  = data.aws_partition.current.partition
   region     = data.aws_region.current.name
