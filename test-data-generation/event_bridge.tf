@@ -14,11 +14,25 @@ resource "aws_cloudwatch_event_rule" "s3_file_upload" {
     detail-type = ["Object Created"]
     detail = {
       bucket = {
-        name = ["${aws_s3_bucket.data_generation_bucket.id}/${local.input_prefix}"]
+        name = [aws_s3_bucket.data_generation_bucket.id]
       }
     }
   })
 }
+
+# {
+#   "source": ["aws.s3"],
+#   "detail-type": ["AWS API Call via CloudTrail"],
+#   "detail": {
+#     "eventName": ["PutObject"],
+#     "requestParameters": {
+#       "bucketName": ["data-generation-bucket-300428143068"],
+#       "key": [{
+#         "prefix": "data/"
+#       }]
+#     }
+#   }
+# }
 
 # EventBridge target
 resource "aws_cloudwatch_event_target" "lambda" {
