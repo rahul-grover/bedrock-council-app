@@ -15,6 +15,11 @@ resource "aws_cloudwatch_event_rule" "s3_file_upload" {
     detail = {
       bucket = {
         name = [aws_s3_bucket.data_generation_bucket.id]
+      },
+      object = {
+        key = [{
+          prefix = "data/"
+        }]
       }
     }
   })
