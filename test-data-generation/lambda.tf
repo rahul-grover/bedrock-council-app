@@ -56,7 +56,8 @@ resource "aws_lambda_function" "glue_processing_lambda" {
     variables = {
       LOG_LEVEL          = "INFO"
       GLUE_DATABASE_NAME = aws_glue_catalog_database.data_catalog.name
-      GLUE_TABLE_NAME    = aws_glue_catalog_table.data_table.name
+      #GLUE_TABLE_NAME    = aws_glue_catalog_table.data_table.name
+      GLUE_TABLE_NAME    = "rg-testdata"
       OUTPUT_S3_LOCATION = aws_s3_bucket.data_generation_bucket.id
       ROLE_ARN           = "arn:aws:iam::300428143068:role/glue-test-full-access"
     }
