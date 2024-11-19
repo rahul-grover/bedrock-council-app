@@ -94,7 +94,7 @@ def lambda_handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             # Store results in S3
             result_key = f"{output_location}/output/{table_name}/dq_results_{run_id}.txt"
             s3_client.put_object(
-                Bucket="{source_bucket}/output",
+                Bucket="{source_bucket}/output/",
                 Key=result_key,
                 Body=recommended_rule_set
             )
